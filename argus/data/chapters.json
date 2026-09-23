@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "source": "http://localhost:8765/new.html",
- "updated": "2026-09-23T00:00:00.000Z",
+ "source": "https://www.webnovel.com/book/35397598808248905/catalog",
+ "updated": "2026-09-23T22:12:22.511Z",
  "volumes": [
   {
    "n": 1,
@@ -10,72 +10,86 @@
     {
      "n": 1,
      "title": "12 Hours & 29 Minutes Past Midnight",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/12-hours-29-minutes-past-midnight_95034274683602428"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/12-hours-29-minutes-past-midnight_95034274683602428",
+     "published": null
     },
     {
      "n": 2,
      "title": "Going Down",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/going-down_95034687268901787"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/going-down_95034687268901787",
+     "published": null
     },
     {
      "n": 3,
      "title": "ARCH/type",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/arch-type_95034751961843351"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/arch-type_95034751961843351",
+     "published": null
     },
     {
      "n": 4,
      "title": "EX: A Clear, Sunny Day",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/ex-a-clear-sunny-day_95284810192311700"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/ex-a-clear-sunny-day_95284810192311700",
+     "published": null
     },
     {
      "n": 5,
      "title": "Introduction & Demonstration",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/introduction-demonstration_95099501546625269"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/introduction-demonstration_95099501546625269",
+     "published": null
     },
     {
      "n": 6,
      "title": "EX: In The Name Of Justice",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/ex-in-the-name-of-justice_95284825627357807"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/ex-in-the-name-of-justice_95284825627357807",
+     "published": null
     },
     {
      "n": 7,
      "title": "A Man's Honor",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/a-man's-honor_95353403504382986"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/a-man's-honor_95353403504382986",
+     "published": null
     },
     {
      "n": 8,
      "title": "The Midnight Haunting Of The Argus Soiree",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/the-midnight-haunting-of-the-argus-soiree_95358844825302324"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/the-midnight-haunting-of-the-argus-soiree_95358844825302324",
+     "published": null
     },
     {
      "n": 9,
      "title": "Argus Barbershop",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/argus-barbershop_95387291735875593"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/argus-barbershop_95387291735875593",
+     "published": null
     },
     {
      "n": 10,
      "title": "Destruction Of The Self",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/destruction-of-the-self_95459250960138227"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/destruction-of-the-self_95459250960138227",
+     "published": null
     },
     {
      "n": 11,
      "title": "9th Bullet",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/9th-bullet_95499079936699183"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/9th-bullet_95499079936699183",
+     "published": null
     },
     {
      "n": 12,
      "title": "Hungry",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/hungry_95527991106390171"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/hungry_95527991106390171",
+     "published": null
     },
     {
      "n": 13,
      "title": "HUZZAH!!~",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/huzzah!!~_95546483624967052"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/huzzah!!~_95546483624967052",
+     "published": null
     },
     {
      "n": 14,
      "title": "Cake & The Pursuit of Happiness - Arc Finale",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/cake-the-pursuit-of-happiness---arc-finale_95912412422659623"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/cake-the-pursuit-of-happiness---arc-finale_95912412422659623",
+     "published": null
     }
    ]
   },
@@ -86,82 +100,98 @@
     {
      "n": 15,
      "title": "EX: Prognostication I: Staring into the Eyes of the Bereft & Ignited",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/ex-prognostication-i-staring-into-the-eyes-of-the-bereft-ignited_96076352934960082"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/ex-prognostication-i-staring-into-the-eyes-of-the-bereft-ignited_96076352934960082",
+     "published": null
     },
     {
      "n": 16,
      "title": "Welcome To Scrapyard Heap",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/welcome-to-scrapyard-heap_95559283298594375"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/welcome-to-scrapyard-heap_95559283298594375",
+     "published": null
     },
     {
      "n": 17,
      "title": "A Skirmish! Argus Directorates VS. Scrapyard Heap!",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/a-skirmish!-argus-directorates-vs.-scrapyard-heap!_96261172759676783"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/a-skirmish!-argus-directorates-vs.-scrapyard-heap!_96261172759676783",
+     "published": null
     },
     {
      "n": 18,
      "title": "Looping The Rooms",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/looping-the-rooms_98284477360425429"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/looping-the-rooms_98284477360425429",
+     "published": null
     },
     {
      "n": 19,
      "title": "King of ARCHs",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/king-of-archs_98291016985002351"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/king-of-archs_98291016985002351",
+     "published": null
     },
     {
      "n": 20,
      "title": "Paperwork",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/paperwork_98318979235377967"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/paperwork_98318979235377967",
+     "published": null
     },
     {
      "n": 21,
      "title": "Unearthed",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/unearthed_98325067485734211"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/unearthed_98325067485734211",
+     "published": null
     },
     {
      "n": 22,
      "title": "Nurturing",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/nurturing_98864871726184463"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/nurturing_98864871726184463",
+     "published": null
     },
     {
      "n": 23,
      "title": "The Binding of Lǎolao",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/the-binding-of-l%C7%8Eolao_98864974134300941"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/the-binding-of-l%C7%8Eolao_98864974134300941",
+     "published": null
     },
     {
      "n": 24,
      "title": "Elevator de Inferno",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/elevator-de-inferno_98878274171625308"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/elevator-de-inferno_98878274171625308",
+     "published": null
     },
     {
      "n": 25,
      "title": "Paradiso",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/paradiso_98879941692678541"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/paradiso_98879941692678541",
+     "published": null
     },
     {
      "n": 26,
      "title": "Enter Alighieri, The World's Last Hope",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/enter-alighieri-the-world's-last-hope_98879982494868141"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/enter-alighieri-the-world's-last-hope_98879982494868141",
+     "published": null
     },
     {
      "n": 27,
      "title": "Fresh Air",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/fresh-air_98885766876297587"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/fresh-air_98885766876297587",
+     "published": null
     },
     {
      "n": 28,
      "title": "Howdy! - Interlude 1",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/howdy!---interlude-1_98886500644616734"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/howdy!---interlude-1_98886500644616734",
+     "published": null
     },
     {
      "n": 29,
      "title": "Full House - Interlude 2",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/full-house---interlude-2_99045185056464680"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/full-house---interlude-2_99045185056464680",
+     "published": null
     },
     {
      "n": 30,
      "title": "Aftershock - Arc Finale",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/aftershock---arc-finale_99047636811699161"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/aftershock---arc-finale_99047636811699161",
+     "published": null
     }
    ]
   },
@@ -172,27 +202,44 @@
     {
      "n": 31,
      "title": "Flavor of Euphoria - Part One",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/flavor-of-euphoria---part-one_98599278867431648"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/flavor-of-euphoria---part-one_98599278867431648",
+     "published": null
     },
     {
      "n": 32,
      "title": "Flavor of Euphoria - Part Two",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/flavor-of-euphoria---part-two_98770918645486193"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/flavor-of-euphoria---part-two_98770918645486193",
+     "published": null
     },
     {
      "n": 33,
      "title": "Flavor of Euphoria - Part Three",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/flavor-of-euphoria---part-three_99272984216263388"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/flavor-of-euphoria---part-three_99272984216263388",
+     "published": null
     },
     {
      "n": 34,
      "title": "Flavor of Euphoria - Part Four",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/flavor-of-euphoria---part-four_99285605514537045"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/flavor-of-euphoria---part-four_99285605514537045",
+     "published": null
     },
     {
      "n": 35,
      "title": "Flavor of Euphoria - Part Five [FINALE]",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/flavor-of-euphoria---part-five-%5Bfinale%5D_99304806434265735"
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/flavor-of-euphoria---part-five-%5Bfinale%5D_99304806434265735",
+     "published": null
+    }
+   ]
+  },
+  {
+   "n": 3,
+   "name": "Death Spinner Arc",
+   "chapters": [
+    {
+     "n": 36,
+     "title": "The Painting & The Letter \"S\"",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/the-painting-the-letter-%22s%22_99317396728241942",
+     "published": null
     }
    ]
   }

@@ -3,11 +3,6 @@ on:
   schedule:
     - cron: "0 */6 * * *"
   workflow_dispatch:
-    inputs:
-      force:
-        description: "Overwrite even if fewer chapters are found"
-        type: boolean
-        default: false
 permissions:
   contents: write
 concurrency: update-chapters
@@ -24,14 +19,13 @@ jobs:
         id: plain
         continue-on-error: true
         run: node scripts/update-chapters.mjs
-        env: { FORCE: "${{ inputs.force }}" }
       - name: Fetch chapters (headless browser fallback)
         if: steps.plain.outcome == 'failure'
         run: |
           npm install --no-save playwright
           npx playwright install --with-deps chromium
           node scripts/update-chapters.mjs
-        env: { MODE: browser, FORCE: "${{ inputs.force }}" }
+        env: { MODE: browser }
       - name: Commit if changed
         id: commit
         run: |

@@ -7,7 +7,6 @@ export const BOOK = '35397598808248905', ORIGIN = 'https://www.webnovel.com';
 export const CATALOG = process.env.CATALOG_URL || `${ORIGIN}/book/${BOOK}/catalog`;
 export const OUT = 'argus/data/chapters.json';
 export const MODE = process.env.MODE || 'http';            // http | browser
-export const FORCE = process.env.FORCE === 'true';         // allow the chapter count to shrink
 const UA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
 const CHAPTER_PATH = new RegExp(`^/book/[^/]+_${BOOK}/([^/]+_\\d+)/?$`);
 
@@ -85,22 +84,20 @@ export function parse(html) {
   return volumes;
 }
 
-export async function refreshChapters({ outputPath = OUT, mode = MODE, force = FORCE, writeFile = true } = {}) {
+export async function refreshChapters({ outputPath = OUT, mode = MODE, writeFile = true } = {}) {
   const volumes = parse(mode === 'browser' ? await viaBrowser() : await viaHttp());
   const total = v => v.reduce((s, x) => s + x.chapters.length, 0);
   const prev = outputPath && writeFile && existsSync(outputPath) ? JSON.parse(readFileSync(outputPath, 'utf8')) : null;
   if (prev && JSON.stringify(prev.volumes) === JSON.stringify(volumes)) {
     return { changed: false, total: total(volumes), volumes, source: CATALOG, updated: new Date().toISOString() };
   }
-  if (prev && !force && total(volumes) < total(prev.volumes))
-    throw new Error(`Found ${total(volumes)} chapters but the site has ${total(prev.volumes)}; keeping the current list. Re-run with force=true if chapters were really removed.`);
   if (writeFile) writeFileSync(outputPath, JSON.stringify({ schema: 1, source: CATALOG, updated: new Date().toISOString(), volumes }, null, 1) + '\n');
   return { changed: true, total: total(volumes), volumes, source: CATALOG, updated: new Date().toISOString() };
 }
 
 if (process.argv[1] && process.argv[1].endsWith('scripts/update-chapters.mjs')) {
   try {
-    const result = await refreshChapters({ outputPath: OUT, mode: MODE, force: FORCE, writeFile: true });
+    const result = await refreshChapters({ outputPath: OUT, mode: MODE, writeFile: true });
     console.log(`Updated: ${result.total} chapters in ${result.volumes.length} volumes.`);
   } catch (e) {
     console.error('Chapter update failed:', e.message);

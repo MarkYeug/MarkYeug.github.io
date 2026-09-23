@@ -17,8 +17,7 @@ The workflow runs every six hours and can also be started manually:
 1. Open the repository's **Actions** tab.
 2. Select **Update chapter list**.
 3. Select **Run workflow**.
-4. Leave **force** disabled unless chapters were intentionally removed.
-
 The workflow first tries a normal request. If WebNovel serves a challenge page or blocks that request, it installs Chromium and retries through a headless browser. It only writes the generated JSON after it has found at least one complete chapter volume, and it refuses to overwrite a larger existing list unless `force` is enabled.
+The workflow first tries a normal request. If WebNovel serves a challenge page or blocks that request, it installs Chromium and retries through a headless browser. Every successful non-empty fetch becomes the new generated JSON, including legitimate removals or reorganizations. A failed, blocked, or empty fetch never overwrites the existing valid list.
 
 After a successful run, the workflow commits the changed JSON. GitHub Pages then serves the updated chapter list on the next deployment.

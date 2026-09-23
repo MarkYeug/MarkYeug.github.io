@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Dev Console | Mark Yeug</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="icon" href="../assets/missing-texture.svg">
+    <link href="https://fonts.googleapis.com/css2?family=Tektur:wght@500;700&family=Spectral:ital,wght@0,400;0,600;1,400&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/style.css">
+  </head>
+  <body>
+    <main class="wrap">
+      <section class="dev-shell" aria-live="polite">
+        <h1 class="name" style="animation:none; justify-content:center; text-align:center;">Dev Console</h1>
+        <label class="sr-only" for="dev-input">Command input</label>
+        <div class="dev-form">
+          <input id="dev-input" type="text" spellcheck="false" placeholder="Type a command..." autocomplete="off">
+          <button type="button" id="dev-submit">Run</button>
+        </div>
+        <div id="dev-status" class="dev-status" aria-live="polite">Ready.</div>
+      </section>
+    </main>
+    <script>
+      const statusEl = document.getElementById('dev-status');
+      const inputEl = document.getElementById('dev-input');
+      const submit = async () => {
+        const raw = (inputEl.value || '').trim();
+        if (!raw) {
+          statusEl.textContent = 'No command entered.';
+          statusEl.className = 'dev-status bad';
+          return;
+        }
+
+        const run = async () => {
+          if (raw === '*#refresh') {
+            const src = '../argus/data/chapters.json?ts=' + Date.now();
+            const res = await fetch(src, { cache: 'no-cache' });
+            if (!res.ok) throw new Error('chapter refresh failed');
+            const data = await res.json();
+            if (!Array.isArray(data.volumes) || !data.volumes.length) throw new Error('invalid chapter data');
+            if (window.refreshArgusChapters) {
+              const last = await window.refreshArgusChapters(src);
+              return `Chapter data refreshed. Latest: ${last.n}: ${last.title}`;
+            }
+            return 'Chapter data refreshed.';
+          }
+
+          if (raw === '*#send') {
+            let latest = 'No chapter data is currently loaded.';
+            if (window.refreshArgusChapters) {
+              const data = await fetch('../argus/data/chapters.json?ts=' + Date.now(), { cache: 'no-cache' }).then(r => r.json());
+              const volumes = Array.isArray(data.volumes) ? data.volumes : [];
+              const last = volumes.length ? volumes[volumes.length - 1].chapters.slice(-1)[0] : null;
+              if (last) latest = `Chapter ${last.n}: ${last.title}\nURL: ${last.url}`;
+            }
+            const subject = encodeURIComponent('Argus Directorates chapter update');
+            const body = encodeURIComponent(latest);
+            window.location.href = `mailto:markyeug@gmail.com?subject=${subject}&body=${body}`;
+            return 'Opening your mail client with the latest chapter data attached.';
+          }
+
+          throw new Error('Unknown command');
+        };
+
+        try {
+          statusEl.className = 'dev-status';
+          statusEl.textContent = 'Running...';
+          const response = await run();
+          statusEl.className = 'dev-status ok';
+          statusEl.textContent = response;
+        } catch (error) {
+          statusEl.className = 'dev-status bad';
+          statusEl.textContent = 'Command failed: ' + (error && error.message ? error.message : 'unknown error');
+        }
+      };
+
+      document.getElementById('dev-submit').addEventListener('click', submit);
+      inputEl.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          submit();
+        }
+      });
+      inputEl.focus();
+    </script>
+  </body>
+</html>

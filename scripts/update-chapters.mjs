@@ -47,9 +47,21 @@ function parse(html) {
     }
     if (!chapters.length) continue;
     const vm = v.title.match(/^volume\s*(\d+)\s*[:.\-–—]?\s*(.*)$/i);
-    volumes.push({ n: vm ? +vm[1] : volumes.length + 1, name: vm ? vm[2] : v.title, chapters });
+    volumes.push({ n: 0, name: vm ? vm[2] : v.title, filler: /\bfiller\b/i.test(v.title), chapters });
   }
   if (!volumes.length) throw new Error(`No chapters found on the page (title: "${clean($('title').text())}"). WebNovel may be blocking this request, or its page layout changed.`);
+  // Numbering: regular volumes count 1, 2, 3... Filler volumes sit between their neighbours:
+  // one filler after Volume 2 -> 2.5; two fillers before Volume 3 -> 2.33 and 2.67.
+  let reg = 0;
+  volumes.forEach(v => { if (!v.filler) v.n = ++reg; });
+  for (let i = 0; i < volumes.length;) {
+    if (!volumes[i].filler) { i++; continue; }
+    let j = i; while (j < volumes.length && volumes[j].filler) j++;      // filler run = i .. j-1
+    const lo = i ? volumes[i - 1].n : 0, hi = j < volumes.length ? volumes[j].n : lo + 1;
+    for (let k = i; k < j; k++) volumes[k].n = Math.round((lo + (hi - lo) * (k - i + 1) / (j - i + 1)) * 100) / 100;
+    i = j;
+  }
+  volumes.forEach(v => delete v.filler);
   return volumes;
 }
 

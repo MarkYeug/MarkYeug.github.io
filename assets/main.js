@@ -8,9 +8,21 @@ const rel=k=>{const d=new Date(base+k*864e5);return at(d.getUTCFullYear(),d.getU
 let h='';for(let i=0;i<7;i++){const d=new Date(base+(i-dow)*864e5),r=R.includes(i);h+=`<div class="d${r?' rel':''}${i==dow?' today':''}"><b>${N[i]}</b><span>${d.getUTCDate()}</span>${r?'<i>Chapter</i>':''}</div>`}
 wk.innerHTML=h;const isR=R.includes(dow),out=isR&&now>=rel(0);let k=0;while(!(R.includes((dow+k)%7)&&rel(k)>now))k++;
 const s=Math.floor((rel(k)-now)/1e3),c=`${Math.floor(s/86400)}d ${Math.floor(s%86400/3600)}h ${Math.floor(s%3600/60)}m ${s%60}s`;
-$('#banner').textContent=isR?`It's Argus ${F[dow]}!`:'This week on Argus';
-$('#status').innerHTML=out?'A new chapter is out now. <a href="https://www.webnovel.com/book/35397598808248905/catalog">Read it on WebNovel</a>':(isR?'New chapter today at 8:00 AM Alaska time':`Next chapter: ${F[(dow+k)%7]} at 8:00 AM Alaska time`);
+const lc=Intl.DateTimeFormat().resolvedOptions().timeZone!==TZ?` (${new Intl.DateTimeFormat([],{hour:'numeric',minute:'2-digit',timeZoneName:'short'}).format(rel(k))} for you)`:'';$('#banner').textContent=isR?`It's Argus ${F[dow]}!`:'This week on Argus';
+$('#status').innerHTML=out?'A new chapter is out now. <a href="https://www.webnovel.com/book/35397598808248905/catalog">Read it on WebNovel</a>':(isR?'New chapter today at 8:00 AM Alaska time'+lc:`Next chapter: ${F[(dow+k)%7]} at 8:00 AM Alaska time`+lc);
 $('#count').textContent=out?'':c;
-if(isR&&!boom&&!matchMedia('(prefers-reduced-motion:reduce)').matches){boom=1;for(let i=0;i<70;i++){const e=document.createElement('u');e.className='cf';e.style.cssText=`left:${Math.random()*100}vw;background:${['#a45cff','#ffd60a','#e10b1f','#ece6f2'][i%4]};animation-delay:${Math.random()*1.2}s;animation-duration:${2.5+Math.random()*2}s`;document.body.append(e)}setTimeout(()=>document.querySelectorAll('.cf').forEach(e=>e.remove()),6500)}};draw();setInterval(draw,1000)}
-const ch=$('#chapters');if(ch&&window.ARGUS)ch.innerHTML=ARGUS.volumes.map(v=>`<section><h2>Volume ${v.n}</h2><p class=arc>${v.name}</p><ol>${v.c.map(c=>`<li><a href="${ARGUS.base+c[2]}" rel=noopener><span>${c[0]}</span>${c[1]}</a></li>`).join('')}</ol></section>`).join('');
-const wd=$('#world');if(wd&&window.WORLD)wd.innerHTML=WORLD.map(s=>`<article><h2>${s.t}</h2><p>${s.d||'This entry is being written.'}</p></article>`).join('')})();
+if(isR&&!boom&&!matchMedia('(prefers-reduced-motion:reduce)').matches){boom=1;for(let i=0;i<70;i++){const e=document.createElement('u');e.className='cf';e.style.cssText=`left:${Math.random()*100}vw;background:${['#d4af37','#f6d365','#8a6d1c','#f4ecd8'][i%4]};animation-delay:${Math.random()*1.2}s;animation-duration:${2.5+Math.random()*2}s`;document.body.append(e)}setTimeout(()=>document.querySelectorAll('.cf').forEach(e=>e.remove()),6500)}};draw();setInterval(draw,1000)}
+const ok=u=>{try{const x=new URL(u);return x.protocol==='https:'&&/(^|\.)webnovel\.com$/.test(x.hostname)}catch{return false}};
+const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+// Loads argus/data/chapters.json (kept up to date by the GitHub Action). Anything unexpected throws -> "Can't display chapters".
+const load=async src=>{const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),8000);
+try{const r=await fetch(src,{cache:'no-cache',signal:ctl.signal});if(!r.ok)throw new Error(r.status);const d=await r.json();
+const v=(Array.isArray(d.volumes)?d.volumes:[]).map((v,i)=>({n:Number.isFinite(v.n)?v.n:i+1,name:String(v.name||''),c:(Array.isArray(v.chapters)?v.chapters:[]).filter(c=>c&&typeof c.title==='string'&&c.title.trim()&&Number.isFinite(c.n)&&ok(c.url))})).filter(v=>v.c.length);
+if(!v.length)throw new Error('empty');return v}finally{clearTimeout(t)}};
+const ch=$('#chapters'),lt=$('#latest');
+if(ch||lt)load((ch||lt).dataset.src).then(vols=>{const last=vols[vols.length-1].c.slice(-1)[0];
+if(ch){ch.replaceChildren(...vols.map(v=>{const s=el('section');s.append(el('h2','','Volume '+v.n));if(v.name)s.append(el('p','arc',v.name));const ol=el('ol');
+v.c.forEach(c=>{const li=el('li'),a=el('a');a.href=c.url;a.rel='noopener';a.append(el('span','',c.n),c.title);if(c===last)a.append(el('em','pill','Latest'));li.append(a);ol.append(li)});s.append(ol);return s}));ch.removeAttribute('aria-busy')}
+if(lt){const a=el('a','','Chapter '+last.n+': '+last.title);a.href=last.url;a.rel='noopener';lt.replaceChildren('Latest chapter: ',a)}
+}).catch(()=>{if(ch){ch.removeAttribute('aria-busy');ch.replaceChildren(el('p','fail',"Can't display chapters"))}});
+const wd=$('#world');if(wd&&window.WORLD)wd.replaceChildren(...WORLD.map(s=>{const a=el('article');a.append(el('h2','',s.t),el('p','',s.d||'This entry is being written.'));return a}))})();

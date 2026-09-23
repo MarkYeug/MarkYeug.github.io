@@ -14,8 +14,8 @@ $('#count').textContent=out?'':c;
 if(isR&&!boom&&!matchMedia('(prefers-reduced-motion:reduce)').matches){boom=1;for(let i=0;i<70;i++){const e=document.createElement('u');e.className='cf';e.style.cssText=`left:${Math.random()*100}vw;background:${['#d4af37','#f6d365','#8a6d1c','#f4ecd8'][i%4]};animation-delay:${Math.random()*1.2}s;animation-duration:${2.5+Math.random()*2}s`;document.body.append(e)}setTimeout(()=>document.querySelectorAll('.cf').forEach(e=>e.remove()),6500)}};draw();setInterval(draw,1000)}
 const ok=u=>{try{const x=new URL(u);return x.protocol==='https:'&&/(^|\.)webnovel\.com$/.test(x.hostname)}catch{return false}};
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
-// Loads argus/data/chapters.json (kept up to date by the GitHub Action). Anything unexpected throws -> "Can't display chapters".
-const load=async src=>{const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),8000);
+// Loads the live chapter catalog. The static site can poll this endpoint every few seconds.
+const load=async src=>{const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),15000);
 try{const r=await fetch(src,{cache:'no-cache',signal:ctl.signal});if(!r.ok)throw new Error(r.status);const d=await r.json();
 const v=(Array.isArray(d.volumes)?d.volumes:[]).map((v,i)=>({n:Number.isFinite(v.n)?v.n:i+1,name:String(v.name||''),c:(Array.isArray(v.chapters)?v.chapters:[]).filter(c=>c&&typeof c.title==='string'&&c.title.trim()&&Number.isFinite(c.n)&&ok(c.url))})).filter(v=>v.c.length);
 if(!v.length)throw new Error('empty');return v}finally{clearTimeout(t)}};
@@ -24,14 +24,13 @@ const resolveDataSrc=(root)=>{
   const candidates=[];
   const direct=root&&root.dataset&&root.dataset.src ? root.dataset.src : '';
   if(direct)candidates.push(direct);
-  const idx = window.location.pathname.endsWith('/argus/') || window.location.pathname.endsWith('/argus') ? 'argus/' : '';
-  candidates.push('data/chapters.json','argus/data/chapters.json','/argus/data/chapters.json','../data/chapters.json','../argus/data/chapters.json');
+  candidates.push('/api/chapters','data/chapters.json','argus/data/chapters.json','/argus/data/chapters.json','../data/chapters.json','../argus/data/chapters.json');
   const seen=new Set();
   for(const candidate of candidates){
     const url = candidate.startsWith('http') ? candidate : new URL(candidate, window.location.href).href;
-    if(!seen.has(url)){seen.add(url);const path = url.replace(window.location.origin,'');if(path.includes('/argus/data/chapters.json')||path.includes('/data/chapters.json'))return url;}
+    if(!seen.has(url)){seen.add(url);const path = url.replace(window.location.origin,'');if(path.includes('/api/chapters')||path.includes('/argus/data/chapters.json')||path.includes('/data/chapters.json'))return url;}
   }
-  return candidates[0] ? new URL(candidates[0], window.location.href).href : 'argus/data/chapters.json';
+  return candidates[0] ? new URL(candidates[0], window.location.href).href : '/api/chapters';
 };
 const renderChapters=vols=>{const last=vols[vols.length-1].c.slice(-1)[0];
 if(ch){ch.replaceChildren(...vols.map(v=>{const s=el('section');s.append(el('h2','','Volume '+v.n));if(v.name)s.append(el('p','arc',v.name));const ol=el('ol');
@@ -40,7 +39,11 @@ if(lt){const a=el('a','','Chapter '+last.n+': '+last.title);a.href=last.url;a.re
 return last;};
 const refreshArgusChapters=async src=>{const dataSrc=src||resolveDataSrc(ch||lt);const vols=await load(dataSrc);return renderChapters(vols)};
 window.refreshArgusChapters=refreshArgusChapters;
-if(ch||lt)refreshArgusChapters(resolveDataSrc(ch||lt)).catch(()=>{if(ch){ch.removeAttribute('aria-busy');ch.replaceChildren(el('p','fail',"Can't display chapters"))}});
+if(ch||lt){
+  const poll = () => refreshArgusChapters(resolveDataSrc(ch||lt)).catch(()=>{if(ch){ch.removeAttribute('aria-busy');ch.replaceChildren(el('p','fail',"Can't display chapters"))}});
+  poll();
+  setInterval(poll, 5000);
+}
 const wd=$('#world');if(wd&&window.WORLD)wd.replaceChildren(...WORLD.map(s=>{const a=el('article');a.append(el('h2','',s.t),el('p','',s.d||'This entry is being written.'));return a}));
 const devLink=document.querySelector('.dev-letter');if(devLink){devLink.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();window.location.href=devLink.getAttribute('href')||'../dev/';}})}
 })();

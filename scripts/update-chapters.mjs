@@ -3,11 +3,11 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { load } from 'cheerio';
 
-const BOOK = '35397598808248905', ORIGIN = 'https://www.webnovel.com';
-const CATALOG = process.env.CATALOG_URL || `${ORIGIN}/book/${BOOK}/catalog`;
-const OUT = 'argus/data/chapters.json';
-const MODE = process.env.MODE || 'http';            // http | browser
-const FORCE = process.env.FORCE === 'true';         // allow the chapter count to shrink
+export const BOOK = '35397598808248905', ORIGIN = 'https://www.webnovel.com';
+export const CATALOG = process.env.CATALOG_URL || `${ORIGIN}/book/${BOOK}/catalog`;
+export const OUT = 'argus/data/chapters.json';
+export const MODE = process.env.MODE || 'http';            // http | browser
+export const FORCE = process.env.FORCE === 'true';         // allow the chapter count to shrink
 const UA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
 const CHAPTER_PATH = new RegExp(`^/book/[^/]+_${BOOK}/([^/]+_\\d+)/?$`);
 
@@ -27,7 +27,7 @@ async function viaBrowser() {
   } finally { await browser.close(); }
 }
 
-function parse(html) {
+export function parse(html) {
   const $ = load(html), clean = s => (s || '').replace(/\s+/g, ' ').trim();
   const vols = $('.volume-item').length
     ? $('.volume-item').toArray().map(v => ({ title: clean($(v).find('h4').first().text()), links: $(v).find('a').toArray() }))
@@ -50,13 +50,11 @@ function parse(html) {
     volumes.push({ n: 0, name: vm ? vm[2] : v.title, filler: /\bfiller\b/i.test(v.title), chapters });
   }
   if (!volumes.length) throw new Error(`No chapters found on the page (title: "${clean($('title').text())}"). WebNovel may be blocking this request, or its page layout changed.`);
-  // Numbering: regular volumes count 1, 2, 3... Filler volumes sit between their neighbours.
-  // One filler arc after Volume 2 should render as 2.5; several filler arcs are spread evenly.
   let reg = 0;
   volumes.forEach(v => { if (!v.filler) v.n = ++reg; });
   for (let i = 0; i < volumes.length;) {
     if (!volumes[i].filler) { i++; continue; }
-    let j = i; while (j < volumes.length && volumes[j].filler) j++; // filler run = i .. j-1
+    let j = i; while (j < volumes.length && volumes[j].filler) j++; 
     const lo = i ? volumes[i - 1].n : 0;
     const hi = j < volumes.length ? volumes[j].n : lo + 1;
     const count = j - i;
@@ -70,13 +68,25 @@ function parse(html) {
   return volumes;
 }
 
-try {
-  const volumes = parse(MODE === 'browser' ? await viaBrowser() : await viaHttp());
+export async function refreshChapters({ outputPath = OUT, mode = MODE, force = FORCE, writeFile = true } = {}) {
+  const volumes = parse(mode === 'browser' ? await viaBrowser() : await viaHttp());
   const total = v => v.reduce((s, x) => s + x.chapters.length, 0);
-  const prev = existsSync(OUT) ? JSON.parse(readFileSync(OUT, 'utf8')) : null;
-  if (prev && JSON.stringify(prev.volumes) === JSON.stringify(volumes)) { console.log(`No change (${total(volumes)} chapters).`); process.exit(0); }
-  if (prev && !FORCE && total(volumes) < total(prev.volumes))
+  const prev = outputPath && writeFile && existsSync(outputPath) ? JSON.parse(readFileSync(outputPath, 'utf8')) : null;
+  if (prev && JSON.stringify(prev.volumes) === JSON.stringify(volumes)) {
+    return { changed: false, total: total(volumes), volumes, source: CATALOG, updated: new Date().toISOString() };
+  }
+  if (prev && !force && total(volumes) < total(prev.volumes))
     throw new Error(`Found ${total(volumes)} chapters but the site has ${total(prev.volumes)}; keeping the current list. Re-run with force=true if chapters were really removed.`);
-  writeFileSync(OUT, JSON.stringify({ schema: 1, source: CATALOG, updated: new Date().toISOString(), volumes }, null, 1) + '\n');
-  console.log(`Updated: ${total(volumes)} chapters in ${volumes.length} volumes.`);
-} catch (e) { console.error('Chapter update failed:', e.message); process.exit(1); }
+  if (writeFile) writeFileSync(outputPath, JSON.stringify({ schema: 1, source: CATALOG, updated: new Date().toISOString(), volumes }, null, 1) + '\n');
+  return { changed: true, total: total(volumes), volumes, source: CATALOG, updated: new Date().toISOString() };
+}
+
+if (process.argv[1] && process.argv[1].endsWith('scripts/update-chapters.mjs')) {
+  try {
+    const result = await refreshChapters({ outputPath: OUT, mode: MODE, force: FORCE, writeFile: true });
+    console.log(`Updated: ${result.total} chapters in ${result.volumes.length} volumes.`);
+  } catch (e) {
+    console.error('Chapter update failed:', e.message);
+    process.exit(1);
+  }
+}

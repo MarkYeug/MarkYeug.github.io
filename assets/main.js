@@ -20,14 +20,27 @@ try{const r=await fetch(src,{cache:'no-cache',signal:ctl.signal});if(!r.ok)throw
 const v=(Array.isArray(d.volumes)?d.volumes:[]).map((v,i)=>({n:Number.isFinite(v.n)?v.n:i+1,name:String(v.name||''),c:(Array.isArray(v.chapters)?v.chapters:[]).filter(c=>c&&typeof c.title==='string'&&c.title.trim()&&Number.isFinite(c.n)&&ok(c.url))})).filter(v=>v.c.length);
 if(!v.length)throw new Error('empty');return v}finally{clearTimeout(t)}};
 const ch=$('#chapters'),lt=$('#latest');
+const resolveDataSrc=(root)=>{
+  const candidates=[];
+  const direct=root&&root.dataset&&root.dataset.src ? root.dataset.src : '';
+  if(direct)candidates.push(direct);
+  const idx = window.location.pathname.endsWith('/argus/') || window.location.pathname.endsWith('/argus') ? 'argus/' : '';
+  candidates.push('data/chapters.json','argus/data/chapters.json','/argus/data/chapters.json','../data/chapters.json','../argus/data/chapters.json');
+  const seen=new Set();
+  for(const candidate of candidates){
+    const url = candidate.startsWith('http') ? candidate : new URL(candidate, window.location.href).href;
+    if(!seen.has(url)){seen.add(url);const path = url.replace(window.location.origin,'');if(path.includes('/argus/data/chapters.json')||path.includes('/data/chapters.json'))return url;}
+  }
+  return candidates[0] ? new URL(candidates[0], window.location.href).href : 'argus/data/chapters.json';
+};
 const renderChapters=vols=>{const last=vols[vols.length-1].c.slice(-1)[0];
 if(ch){ch.replaceChildren(...vols.map(v=>{const s=el('section');s.append(el('h2','','Volume '+v.n));if(v.name)s.append(el('p','arc',v.name));const ol=el('ol');
 v.c.forEach(c=>{const li=el('li'),a=el('a');a.href=c.url;a.rel='noopener';a.append(el('span','',c.n),c.title);if(c===last)a.append(el('em','pill','Latest'));li.append(a);ol.append(li)});s.append(ol);return s}));ch.removeAttribute('aria-busy')}
 if(lt){const a=el('a','','Chapter '+last.n+': '+last.title);a.href=last.url;a.rel='noopener';lt.replaceChildren('Latest chapter: ',a)}
 return last;};
-const refreshArgusChapters=async src=>{const dataSrc=src||((ch||lt)?.dataset.src||'argus/data/chapters.json');const vols=await load(dataSrc);return renderChapters(vols)};
+const refreshArgusChapters=async src=>{const dataSrc=src||resolveDataSrc(ch||lt);const vols=await load(dataSrc);return renderChapters(vols)};
 window.refreshArgusChapters=refreshArgusChapters;
-if(ch||lt)refreshArgusChapters((ch||lt).dataset.src).catch(()=>{if(ch){ch.removeAttribute('aria-busy');ch.replaceChildren(el('p','fail',"Can't display chapters"))}});
+if(ch||lt)refreshArgusChapters(resolveDataSrc(ch||lt)).catch(()=>{if(ch){ch.removeAttribute('aria-busy');ch.replaceChildren(el('p','fail',"Can't display chapters"))}});
 const wd=$('#world');if(wd&&window.WORLD)wd.replaceChildren(...WORLD.map(s=>{const a=el('article');a.append(el('h2','',s.t),el('p','',s.d||'This entry is being written.'));return a}));
-const devLink=document.querySelector('.dev-letter');if(devLink){const go=()=>{window.location.href=devLink.dataset.go||'../dev/';};devLink.addEventListener('click',go);devLink.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}})}
+const devLink=document.querySelector('.dev-letter');if(devLink){devLink.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();window.location.href=devLink.getAttribute('href')||'../dev/';}})}
 })();

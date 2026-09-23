@@ -37,6 +37,15 @@ async function viaBrowser() {
 
 export function parse(html) {
   const $ = load(html), clean = s => (s || '').replace(/\s+/g, ' ').trim();
+  const dateFrom = element => {
+    const scope = $(element).closest('li, .chapter-item, .chapter, .volume-item');
+    const raw = scope.find('time[datetime], [data-time], [data-date], [datetime]').first().attr('datetime')
+      || scope.find('[data-time], [data-date]').first().attr('data-time')
+      || scope.find('[data-date]').first().attr('data-date');
+    if (!raw) return null;
+    const date = new Date(raw);
+    return Number.isNaN(date.getTime()) ? null : date.toISOString();
+  };
   const vols = $('.volume-item').length
     ? $('.volume-item').toArray().map(v => ({ title: clean($(v).find('h4').first().text()), links: $(v).find('a').toArray() }))
     : [{ title: '', links: $('a').toArray() }];
@@ -51,7 +60,7 @@ export function parse(html) {
       if (m) title = m[2];
       if (!title) continue;
       seen.add(id); n = m ? +m[1] : n + 1;
-      chapters.push({ n, title, url: ORIGIN + u.pathname });
+      chapters.push({ n, title, url: ORIGIN + u.pathname, published: dateFrom(a) });
     }
     if (!chapters.length) continue;
     const vm = v.title.match(/^volume\s*(\d+)\s*[:.\-–—]?\s*(.*)$/i);

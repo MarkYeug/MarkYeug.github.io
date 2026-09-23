@@ -33,10 +33,28 @@ jobs:
           node scripts/update-chapters.mjs
         env: { MODE: browser, FORCE: "${{ inputs.force }}" }
       - name: Commit if changed
+        id: commit
         run: |
-          git diff --quiet -- argus/data/chapters.json && { echo "Nothing to commit"; exit 0; }
+          if git diff --quiet -- argus/data/chapters.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Nothing to commit"
+            exit 0
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add argus/data/chapters.json
           git commit -m "Update chapter list"
           git pull --rebase && git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+      - name: Send email only on chapter data change
+        if: steps.commit.outputs.changed == 'true'
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          EMAIL_TO: fabusunyow@gmail.com
+          EMAIL_SUBJECT: "Argus chapter data updated"
+          EMAIL_TEXT: "The generated chapter data changed and the site now reflects the latest chapter list."
+        run: node scripts/send-update-email.mjs

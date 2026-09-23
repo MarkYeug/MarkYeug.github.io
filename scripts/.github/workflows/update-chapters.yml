@@ -1,0 +1,42 @@
+name: Update chapter list
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Overwrite even if fewer chapters are found"
+        type: boolean
+        default: false
+permissions:
+  contents: write
+concurrency: update-chapters
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Fetch chapters (plain request)
+        id: plain
+        continue-on-error: true
+        run: node scripts/update-chapters.mjs
+        env: { FORCE: "${{ inputs.force }}" }
+      - name: Fetch chapters (headless browser fallback)
+        if: steps.plain.outcome == 'failure'
+        run: |
+          npm install --no-save playwright
+          npx playwright install --with-deps chromium
+          node scripts/update-chapters.mjs
+        env: { MODE: browser, FORCE: "${{ inputs.force }}" }
+      - name: Commit if changed
+        run: |
+          git diff --quiet -- argus/data/chapters.json && { echo "Nothing to commit"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add argus/data/chapters.json
+          git commit -m "Update chapter list"
+          git pull --rebase && git push

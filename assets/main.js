@@ -51,13 +51,16 @@ if(lt){const a=el('a','','Chapter '+last.n+': '+last.title);a.href=last.url;a.re
 return last;};
 const refreshArgusChapters=async src=>{
   const dataSrc=src||resolveDataSrc(ch||lt);
-  const fallback = [dataSrc, 'argus/data/chapters.json', '../argus/data/chapters.json', '/argus/data/chapters.json', '/data/chapters.json'];
-  const vols=await load([...new Set(fallback)]);
+  const vols=await load(dataSrc);
   return renderChapters(vols);
 };
 window.refreshArgusChapters=refreshArgusChapters;
 if(ch||lt){
-  const poll = () => refreshArgusChapters(resolveDataSrc(ch||lt)).catch(()=>{if(ch){ch.removeAttribute('aria-busy');ch.replaceChildren(el('p','fail',"Can't display chapters"))}});
+  const showFailure = () => {
+    if(ch){ch.removeAttribute('aria-busy');ch.replaceChildren(el('p','fail','failed to load chapters'))}
+    if(lt)lt.replaceChildren(el('span','fail','failed to load chapters'));
+  };
+  const poll = () => refreshArgusChapters(resolveDataSrc(ch||lt)).catch(showFailure);
   poll();
   setInterval(poll, 5000);
 }

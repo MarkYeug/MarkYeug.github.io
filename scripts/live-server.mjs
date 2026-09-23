@@ -1,5 +1,5 @@
 import http from 'node:http';
-import { readFile, stat } from 'node:fs/promises';
+import { stat } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -68,14 +68,12 @@ const server = http.createServer(async (req, res) => {
       const result = await refreshChapters({ outputPath: null, mode: 'http', force: false, writeFile: false });
       await sendJSON(res, { source: result.source || CATALOG, updated: result.updated, volumes: result.volumes });
     } catch (error) {
-      const fallbackFile = path.join(root, 'argus/data/chapters.json');
-      try {
-        const fallbackText = await readFile(fallbackFile, 'utf8');
-        const fallback = JSON.parse(fallbackText);
-        await sendJSON(res, { source: fallback.source || 'fallback', updated: fallback.updated || new Date().toISOString(), volumes: fallback.volumes || [], fallback: true, lastError: String(error.message || error) });
-      } catch {
-        await sendJSON(res, { error: String(error.message || error), fallback: false }, 500);
-      }
+      res.writeHead(503, {
+        'Content-Type': 'text/plain; charset=utf-8',
+        'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+        'Access-Control-Allow-Origin': '*'
+      });
+      res.end('failed to load chapters');
     }
     return;
   }

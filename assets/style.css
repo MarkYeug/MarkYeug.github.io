@@ -1,4 +1,4 @@
-:root{--void:#09060f;--vio:#170f26;--bone:#ece6f2;--dim:#a99fbd;--pur:#a45cff;--glow:#7b2fff}
+:root{--void:#09060f;--vio:#170f26;--bone:#ece6f2;--dim:#c8c78b;--pur:#ffe75c;--glow:#7b2fff}
 *{box-sizing:border-box}html{color-scheme:dark}
 body{margin:0;min-height:100vh;color:var(--bone);background:radial-gradient(90% 55% at 50% -10%,#2c1454,transparent),var(--void);font:18px/1.7 Spectral,Georgia,serif}
 body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;background:repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 3px)}

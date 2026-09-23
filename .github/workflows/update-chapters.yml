@@ -47,7 +47,7 @@ jobs:
           git pull --rebase && git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
       - name: Send email only on chapter data change
-        if: steps.commit.outputs.changed == 'true' && secrets.SMTP_HOST != '' && secrets.SMTP_USER != '' && secrets.SMTP_PASS != ''
+        if: steps.commit.outputs.changed == 'true'
         env:
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}

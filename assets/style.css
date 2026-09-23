@@ -1,6 +1,6 @@
 :root{--void:#09060f;--vio:#170f26;--bone:#ece6f2;--dim:#c8c78b;--pur:#ffe75c;--glow:#7b2fff}
 *{box-sizing:border-box}html{color-scheme:dark}
-body{margin:0;min-height:100vh;color:var(--bone);background:radial-gradient(90% 55% at 50% -10%,#2c1454,transparent),var(--void);font:18px/1.7 Spectral,Georgia,serif}
+body{margin:0;min-height:100vh;color:var(--bone);background:radial-gradient(90% 55% at 50% -10%,#fff200,transparent),var(--void);font:18px/1.7 Spectral,Georgia,serif}
 body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:9;background:repeating-linear-gradient(0deg,rgba(0,0,0,.2) 0 1px,transparent 1px 3px)}
 a{color:inherit}a:focus-visible,button:focus-visible{outline:3px solid var(--pur);outline-offset:3px}
 h1,h2,h3,.nav,.btn{font-family:Tektur,sans-serif;font-weight:700}
@@ -10,11 +10,11 @@ header .wrap{display:flex;justify-content:space-between;align-items:center;gap:1
 .nav a{margin-left:22px;text-decoration:none;color:var(--dim);padding:4px 0;border-bottom:2px solid transparent}
 .nav a:hover,.nav a[aria-current]{color:var(--bone);border-color:var(--pur)}
 .hero{display:grid;grid-template-columns:minmax(220px,340px) 1fr;gap:44px;align-items:center;padding:28px 0 44px}
-.cover{width:100%;display:block;border:2px solid var(--pur);box-shadow:0 0 46px rgba(123,47,255,.55),10px 10px 0 var(--vio);transform:rotate(-1.5deg)}
+.cover{width:100%;display:block;border:2px solid var(--pur);box-shadow:0 0 46px rgba(245, 255, 47, 0.55),10px 10px 0 var(--vio);transform:rotate(-1.5deg)}
 h1{font-size:clamp(2.2rem,6vw,3.8rem);line-height:1.02;margin:0 0 8px;letter-spacing:.03em;text-shadow:2px 0 #e10b1f,-2px 0 var(--pur);animation:glitch .7s steps(2) 1}
 @keyframes glitch{0%{transform:translateX(-6px);text-shadow:8px 0 #e10b1f,-8px 0 var(--pur)}40%{transform:translateX(5px)}100%{transform:none}}
 .tag{color:var(--dim);font-style:italic;margin:0 0 20px}.gen{color:var(--pur);font:500 .95rem Tektur,sans-serif;letter-spacing:.08em;margin:0 0 18px}
-.btn{display:inline-block;padding:12px 26px;border:2px solid var(--pur);color:var(--bone);text-decoration:none;box-shadow:0 0 22px rgba(123,47,255,.5);transition:.15s}
+.btn{display:inline-block;padding:12px 26px;border:2px solid var(--pur);color:var(--bone);text-decoration:none;box-shadow:0 0 22px rgba(255, 234, 47, 0.5);transition:.15s}
 .btn:hover{background:var(--pur);color:var(--void)}
 .week{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:14px 0}
 .d{border:1px solid #2d2340;padding:10px 4px;text-align:center;background:var(--vio);min-height:92px}
@@ -23,12 +23,12 @@ h1{font-size:clamp(2.2rem,6vw,3.8rem);line-height:1.02;margin:0 0 8px;letter-spa
 #banner{font:700 1.6rem Tektur,sans-serif;margin:0}#status{margin:4px 0 0;color:var(--dim)}#count{font:700 2rem Tektur,sans-serif;color:var(--bone)}
 .release{border-top:2px solid var(--pur);padding:22px 0 40px}
 section h2{margin:34px 0 0;font-size:1.6rem}.arc{margin:0 0 10px;color:var(--pur);font-style:italic}
-ol{list-style:none;margin:0;padding:0}ol a{display:flex;gap:16px;padding:9px 12px;text-decoration:none;border-bottom:1px solid #2a2040}
+ol{list-style:none;margin:0;padding:0}ol a{display:flex;gap:16px;padding:9px 12px;text-decoration:none;border-bottom:1px solid #403d20}
 ol a:hover{background:var(--vio);color:var(--pur)}ol span{min-width:2.2em;font:700 1rem Tektur,sans-serif;color:var(--pur)}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;padding:20px 0 40px}
 article,.card{border:1px solid var(--pur);background:var(--vio) url(missing-texture.svg) no-repeat right 14px top 14px/34px;padding:20px 22px;text-decoration:none}
 article h2,.card h3{margin:0 0 6px;font-size:1.3rem}article p,.card p{margin:0;color:var(--dim)}
-a.card:hover{box-shadow:0 0 30px rgba(123,47,255,.6)}
+a.card:hover{box-shadow:0 0 30px rgba(238, 255, 47, 0.6)}
 .name{font:700 clamp(3rem,10vw,5.5rem)/1 UnifrakturCook,serif;margin:18px 0 0;text-shadow:3px 0 #e10b1f,-3px 0 var(--pur)}
 footer{border-top:1px solid #2a2040;padding:26px 0 40px;color:var(--dim);font-size:.9rem}
 .cf{position:fixed;top:-14px;width:8px;height:14px;z-index:10;animation:fall linear forwards}@keyframes fall{to{transform:translateY(105vh) rotate(720deg)}}

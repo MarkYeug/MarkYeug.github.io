@@ -68,7 +68,14 @@ const server = http.createServer(async (req, res) => {
       const result = await refreshChapters({ outputPath: null, mode: 'http', force: false, writeFile: false });
       await sendJSON(res, { source: result.source || CATALOG, updated: result.updated, volumes: result.volumes });
     } catch (error) {
-      await sendJSON(res, { error: String(error.message || error) }, 500);
+      const fallbackFile = path.join(root, 'argus/data/chapters.json');
+      try {
+        const fallbackText = await readFile(fallbackFile, 'utf8');
+        const fallback = JSON.parse(fallbackText);
+        await sendJSON(res, { source: fallback.source || 'fallback', updated: fallback.updated || new Date().toISOString(), volumes: fallback.volumes || [], fallback: true, lastError: String(error.message || error) });
+      } catch {
+        await sendJSON(res, { error: String(error.message || error), fallback: false }, 500);
+      }
     }
     return;
   }

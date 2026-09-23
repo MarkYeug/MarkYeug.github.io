@@ -15,10 +15,22 @@ if(isR&&!boom&&!matchMedia('(prefers-reduced-motion:reduce)').matches){boom=1;fo
 const ok=u=>{try{const x=new URL(u);return x.protocol==='https:'&&/(^|\.)webnovel\.com$/.test(x.hostname)}catch{return false}};
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
 // Loads the live chapter catalog. The static site can poll this endpoint every few seconds.
-const load=async src=>{const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),15000);
-try{const r=await fetch(src,{cache:'no-cache',signal:ctl.signal});if(!r.ok)throw new Error(r.status);const d=await r.json();
-const v=(Array.isArray(d.volumes)?d.volumes:[]).map((v,i)=>({n:Number.isFinite(v.n)?v.n:i+1,name:String(v.name||''),c:(Array.isArray(v.chapters)?v.chapters:[]).filter(c=>c&&typeof c.title==='string'&&c.title.trim()&&Number.isFinite(c.n)&&ok(c.url))})).filter(v=>v.c.length);
-if(!v.length)throw new Error('empty');return v}finally{clearTimeout(t)}};
+const load=async src=>{const candidates = Array.isArray(src) ? src : [src];
+let lastError = null;
+for (const candidate of candidates) {
+  const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),15000);
+  try{
+    const r=await fetch(candidate,{cache:'no-cache',signal:ctl.signal});
+    if(!r.ok) throw new Error(r.status);
+    const d=await r.json();
+    const v=(Array.isArray(d.volumes)?d.volumes:[]).map((v,i)=>({n:Number.isFinite(v.n)?v.n:i+1,name:String(v.name||''),c:(Array.isArray(v.chapters)?v.chapters:[]).filter(c=>c&&typeof c.title==='string'&&c.title.trim()&&Number.isFinite(c.n)&&ok(c.url))})).filter(v=>v.c.length);
+    if(!v.length) throw new Error('empty');
+    return v;
+  } catch (error) {
+    lastError = error;
+  } finally { clearTimeout(t); }
+}
+throw lastError || new Error('empty');};
 const ch=$('#chapters'),lt=$('#latest');
 const resolveDataSrc=(root)=>{
   const candidates=[];
@@ -37,7 +49,12 @@ if(ch){ch.replaceChildren(...vols.map(v=>{const s=el('section');s.append(el('h2'
 v.c.forEach(c=>{const li=el('li'),a=el('a');a.href=c.url;a.rel='noopener';a.append(el('span','',c.n),c.title);if(c===last)a.append(el('em','pill','Latest'));li.append(a);ol.append(li)});s.append(ol);return s}));ch.removeAttribute('aria-busy')}
 if(lt){const a=el('a','','Chapter '+last.n+': '+last.title);a.href=last.url;a.rel='noopener';lt.replaceChildren('Latest chapter: ',a)}
 return last;};
-const refreshArgusChapters=async src=>{const dataSrc=src||resolveDataSrc(ch||lt);const vols=await load(dataSrc);return renderChapters(vols)};
+const refreshArgusChapters=async src=>{
+  const dataSrc=src||resolveDataSrc(ch||lt);
+  const fallback = [dataSrc, 'argus/data/chapters.json', '../argus/data/chapters.json', '/argus/data/chapters.json', '/data/chapters.json'];
+  const vols=await load([...new Set(fallback)]);
+  return renderChapters(vols);
+};
 window.refreshArgusChapters=refreshArgusChapters;
 if(ch||lt){
   const poll = () => refreshArgusChapters(resolveDataSrc(ch||lt)).catch(()=>{if(ch){ch.removeAttribute('aria-busy');ch.replaceChildren(el('p','fail',"Can't display chapters"))}});

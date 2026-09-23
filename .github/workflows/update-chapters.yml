@@ -17,10 +17,16 @@ jobs:
       - run: npm ci
       - name: Fetch chapters (plain request)
         id: plain
-        continue-on-error: true
-        run: node scripts/update-chapters.mjs
+        shell: bash
+        run: |
+          if node scripts/update-chapters.mjs; then
+            echo "success=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Plain request was unavailable; switching to Chromium."
+            echo "success=false" >> "$GITHUB_OUTPUT"
+          fi
       - name: Fetch chapters (headless browser fallback)
-        if: steps.plain.outcome == 'failure'
+        if: steps.plain.outputs.success != 'true'
         run: |
           npm install --no-save --package-lock=false playwright
           npx playwright install --with-deps chromium

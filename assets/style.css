@@ -29,6 +29,8 @@ ol a:hover{background:var(--coal);color:var(--gold)}ol span{min-width:2.2em;font
 article,.card{border:1px solid var(--gold);background:var(--coal) url(missing-texture.svg) no-repeat right 14px top 14px/34px;padding:20px 22px;text-decoration:none}
 article h2,.card h3{margin:0 0 6px;font-size:1.3rem}article p,.card p{margin:0;color:var(--dim)}
 a.card:hover{box-shadow:0 0 30px rgba(212,175,55,.5)}
+.ad-card{display:grid;place-items:center;aspect-ratio:1;min-height:120px;padding:0}
+.ad-mark{font:700 clamp(2rem,4vw,4rem)/1 Tektur,sans-serif;letter-spacing:.08em;color:var(--gold);text-shadow:0 0 22px rgba(212,175,55,.5)}
 .name{font:700 clamp(3rem,10vw,5.5rem)/1 UnifrakturCook,serif;margin:18px 0 0;text-shadow:3px 0 var(--gold-lo),-3px 0 var(--gold-hi)}
 footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--dim);font-size:.9rem}
 .cf{position:fixed;top:-14px;width:8px;height:14px;z-index:10;animation:fall linear forwards}@keyframes fall{to{transform:translateY(105vh) rotate(720deg)}}

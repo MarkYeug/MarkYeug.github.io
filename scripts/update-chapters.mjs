@@ -50,15 +50,20 @@ function parse(html) {
     volumes.push({ n: 0, name: vm ? vm[2] : v.title, filler: /\bfiller\b/i.test(v.title), chapters });
   }
   if (!volumes.length) throw new Error(`No chapters found on the page (title: "${clean($('title').text())}"). WebNovel may be blocking this request, or its page layout changed.`);
-  // Numbering: regular volumes count 1, 2, 3... Filler volumes sit between their neighbours:
-  // one filler after Volume 2 -> 2.5; two fillers before Volume 3 -> 2.33 and 2.67.
+  // Numbering: regular volumes count 1, 2, 3... Filler volumes sit between their neighbours.
+  // One filler arc after Volume 2 should render as 2.5; several filler arcs are spread evenly.
   let reg = 0;
   volumes.forEach(v => { if (!v.filler) v.n = ++reg; });
   for (let i = 0; i < volumes.length;) {
     if (!volumes[i].filler) { i++; continue; }
-    let j = i; while (j < volumes.length && volumes[j].filler) j++;      // filler run = i .. j-1
-    const lo = i ? volumes[i - 1].n : 0, hi = j < volumes.length ? volumes[j].n : lo + 1;
-    for (let k = i; k < j; k++) volumes[k].n = Math.round((lo + (hi - lo) * (k - i + 1) / (j - i + 1)) * 100) / 100;
+    let j = i; while (j < volumes.length && volumes[j].filler) j++; // filler run = i .. j-1
+    const lo = i ? volumes[i - 1].n : 0;
+    const hi = j < volumes.length ? volumes[j].n : lo + 1;
+    const count = j - i;
+    for (let k = i; k < j; k++) {
+      const fraction = count === 1 ? 0.5 : (k - i + 1) / (count + 1);
+      volumes[k].n = Number((lo + (hi - lo) * fraction).toFixed(2));
+    }
     i = j;
   }
   volumes.forEach(v => delete v.filler);

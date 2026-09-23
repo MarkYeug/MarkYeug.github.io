@@ -18,12 +18,20 @@ async function viaHttp() {
 }
 async function viaBrowser() {
   const { chromium } = await import('playwright');
-  const browser = await chromium.launch();
+  const browser = await chromium.launch({ headless: true });
   try {
-    const page = await (await browser.newContext({ userAgent: UA })).newPage();
+    const context = await browser.newContext({
+      userAgent: UA,
+      locale: 'en-US',
+      viewport: { width: 1440, height: 1200 }
+    });
+    const page = await context.newPage();
     await page.goto(CATALOG, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await page.waitForLoadState('networkidle', { timeout: 30000 }).catch(() => {});
     await page.waitForSelector(`a[href*="_${BOOK}/"]`, { timeout: 45000 });
-    return await page.content();
+    const html = await page.content();
+    await context.close();
+    return html;
   } finally { await browser.close(); }
 }
 

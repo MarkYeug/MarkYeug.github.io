@@ -34,8 +34,8 @@ const finalTextWithUrl = finalText.includes('{chapter_url}') ? finalText.replace
 const finalBody = `${finalTextWithUrl}\n\nLatest chapter: ${chapterTitle}\nURL: ${chapterUrl}`;
 
 if (!SMTP_HOST || !SMTP_USER || !SMTP_PASS) {
-  console.error('Missing SMTP configuration: SMTP_HOST, SMTP_USER, and SMTP_PASS are required.');
-  process.exit(1);
+  console.log('SMTP configuration not set; skipping email notification.');
+  process.exit(0);
 }
 
 const transporter = nodemailer.createTransport({

@@ -17,7 +17,8 @@ const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=nu
 // Loads the live chapter catalog. The static site can poll this endpoint every few seconds.
 const load=async src=>{const candidates = Array.isArray(src) ? src : [src];
 let lastError = null;
-for (const candidate of candidates) {
+for (let index = 0; index < candidates.length; index++) {
+  const candidate = candidates[index];
   const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),15000);
   try{
     const r=await fetch(candidate,{cache:'no-cache',signal:ctl.signal});
@@ -25,7 +26,7 @@ for (const candidate of candidates) {
     const d=await r.json();
     const v=(Array.isArray(d.volumes)?d.volumes:[]).map((v,i)=>({n:Number.isFinite(v.n)?v.n:i+1,name:String(v.name||''),c:(Array.isArray(v.chapters)?v.chapters:[]).filter(c=>c&&typeof c.title==='string'&&c.title.trim()&&Number.isFinite(c.n)&&ok(c.url))})).filter(v=>v.c.length);
     if(!v.length) throw new Error('empty');
-    return v;
+    return { volumes: v, liveRefreshFailed: Boolean(d.liveRefreshFailed) || index > 0 };
   } catch (error) {
     lastError = error;
   } finally { clearTimeout(t); }
@@ -51,8 +52,17 @@ if(lt){const a=el('a','','Chapter '+last.n+': '+last.title);a.href=last.url;a.re
 return last;};
 const refreshArgusChapters=async src=>{
   const dataSrc=src||resolveDataSrc(ch||lt);
-  const vols=await load(dataSrc);
-  return renderChapters(vols);
+  const candidates=[dataSrc,'/argus/data/chapters.json','../data/chapters.json','../argus/data/chapters.json'];
+  const result=await load([...new Set(candidates)]);
+  const last=renderChapters(result.volumes);
+  if(result.liveRefreshFailed){
+    document.querySelectorAll('.live-refresh-failure').forEach(e=>e.remove());
+    const warning=el('p','fail','failed to load chapters');
+    warning.classList.add('live-refresh-failure');
+    if(ch)ch.prepend(warning);
+    if(lt){const homeWarning=el('span','fail','failed to load chapters ');homeWarning.classList.add('live-refresh-failure');lt.prepend(homeWarning)}
+  }
+  return last;
 };
 window.refreshArgusChapters=refreshArgusChapters;
 if(ch||lt){

@@ -1,5 +1,5 @@
 import http from 'node:http';
-import { stat } from 'node:fs/promises';
+import { readFile, stat } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -68,12 +68,24 @@ const server = http.createServer(async (req, res) => {
       const result = await refreshChapters({ outputPath: null, mode: 'http', force: false, writeFile: false });
       await sendJSON(res, { source: result.source || CATALOG, updated: result.updated, volumes: result.volumes });
     } catch (error) {
-      res.writeHead(503, {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
-        'Access-Control-Allow-Origin': '*'
-      });
-      res.end('failed to load chapters');
+      const fallbackFile = path.join(root, 'argus/data/chapters.json');
+      try {
+        const fallback = JSON.parse(await readFile(fallbackFile, 'utf8'));
+        await sendJSON(res, {
+          source: fallback.source || 'saved chapter snapshot',
+          updated: fallback.updated || null,
+          volumes: fallback.volumes || [],
+          liveRefreshFailed: true,
+          error: String(error.message || error)
+        });
+      } catch {
+        res.writeHead(503, {
+          'Content-Type': 'text/plain; charset=utf-8',
+          'Cache-Control': 'no-store, no-cache, must-revalidate, max-age=0',
+          'Access-Control-Allow-Origin': '*'
+        });
+        res.end('failed to load chapters');
+      }
     }
     return;
   }

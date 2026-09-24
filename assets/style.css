@@ -60,6 +60,9 @@ a.card:hover{box-shadow:0 0 30px rgba(212,175,55,.5)}
 .dev-page .dev-form button:hover{background:#fff;color:#000;transform:translate(-1px,-1px)}
 .dev-page .dev-status{border-color:#49413e;background:#111;color:#d5c6bc;font-family:Spectral,Georgia,serif;box-shadow:inset 0 0 0 1px #050505}
 .dev-page .dev-status.ok{border-color:#aaa;color:#f1e8df}.dev-page .dev-status.bad{border-color:#a66f6f;color:#f0bdbd}
+.snake-game{margin-top:24px;padding:20px;border:1px solid #6f6460;background:#111;box-shadow:5px 5px 0 #000}
+.snake-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.snake-head h2{margin:0;font:600 1.8rem Spectral,Georgia,serif;color:#eee}.snake-head button,.snake-controls button{border:1px solid #aaa;border-radius:0;background:#e5d8cd;color:#0b0909;padding:8px 12px;font:600 .9rem Spectral,Georgia,serif;cursor:pointer}.snake-head button:hover,.snake-controls button:hover{background:#fff}
+#snake-canvas{display:block;width:min(100%,400px);height:auto;margin:18px auto 10px;border:1px solid #777;image-rendering:pixelated}.snake-game p{margin:8px 0;text-align:center;color:#cfcfcf}.snake-controls{text-align:center}.snake-controls>button{display:block;margin:0 auto 6px}.snake-controls div{display:flex;justify-content:center;gap:6px}
 footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--dim);font-size:.9rem}
 .cf{position:fixed;top:-14px;width:8px;height:14px;z-index:10;animation:fall linear forwards}@keyframes fall{to{transform:translateY(105vh) rotate(720deg)}}
 @media(max-width:700px){.hero{grid-template-columns:1fr}.cover{max-width:300px;margin:0 auto}.d{min-height:76px}.d i{display:none}}
@@ -82,17 +85,14 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--dim);fon
 .home-page section{max-width:920px;margin-top:clamp(64px,12vh,150px)}
 .home-page section h2{font-family:UnifrakturCook,serif;font-size:2.3rem;font-weight:700;letter-spacing:.02em;color:#e9ded1;text-shadow:2px 2px 0 #1a1112}
 .home-page .grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;padding-top:14px}
-.home-page .book-links{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:18px;max-width:100%;padding:28px 0 40px}
+.home-page .book-links{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px;max-width:100%;padding:28px 0 40px}
 .home-page .card{position:relative;border:1px solid rgba(225,207,190,.55);border-radius:0;background:rgba(17,12,13,.78) url(missing-texture.svg) no-repeat right 14px top 14px/34px;padding:24px 22px;box-shadow:5px 5px 0 rgba(0,0,0,.5),inset 0 0 0 1px rgba(0,0,0,.65);transform:rotate(-.35deg)}
 .home-page .card:nth-child(even){transform:rotate(.45deg)}
 .home-page .card h3{font-family:UnifrakturCook,serif;font-size:1.65rem;font-weight:700;color:#eadfd2}
 .home-page .card p{color:#bdaea4}
 .home-page a.card:hover{background-color:rgba(48,29,32,.9);box-shadow:8px 9px 0 rgba(0,0,0,.62),inset 0 0 0 1px rgba(225,207,190,.28);color:#fff4e8;transform:translateY(-3px) rotate(0)}
-.home-page .book-links .ad-card,.home-page .book-links .ph-card{width:132px;height:132px;min-height:132px;max-width:132px;flex:0 0 132px;aspect-ratio:1;padding:0}
-.home-page .ad-card{background:#0b0809 url(missing-texture.svg) no-repeat center/42px}
-.home-page .ad-mark{font-family:UnifrakturCook,serif;font-size:2rem;letter-spacing:.02em;color:#eadfd2;text-shadow:2px 2px 0 #2e171b}
-.home-page .ph-card{max-width:132px;min-height:132px;padding:0;background:#070707;color:#f1f1f1}
-.home-page .ph-mark{font-family:UnifrakturCook,serif;font-size:1.65rem;letter-spacing:.02em;color:#f1f1f1;text-shadow:2px 2px 0 #000}
+.home-page .book-card{width:min(100%,520px);min-height:74px;padding:18px 28px;display:grid;place-items:center;background:#0b0809;color:#eadfd2;text-align:center;font:600 clamp(1.15rem,3vw,1.7rem)/1 Spectral,Georgia,serif;letter-spacing:.08em}
+.home-page .book-card.ph-card{background:#070707;color:#f1f1f1}
 .home-page .dev-letter:hover,.home-page .dev-letter:focus-visible{color:#fff4e8;border-color:#d7bdb0}
 .home-page footer{margin-top:clamp(72px,14vh,170px);border-color:rgba(225,207,190,.2);color:#9d8e87}
 @media(max-width:700px){.home-page .name{margin-top:48px;font-size:clamp(3.6rem,19vw,6rem)}.home-page section{margin-top:80px}.home-page .card,.home-page .card:nth-child(even){transform:none}}

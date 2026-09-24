@@ -18,11 +18,42 @@
           <button type="button" id="dev-submit">Run</button>
         </div>
         <div id="dev-status" class="dev-status" aria-live="polite">Ready.</div>
+        <section id="snake-game" class="snake-game" hidden aria-label="Snake game">
+          <div class="snake-head"><h2>Snake</h2><button type="button" id="snake-close">Close</button></div>
+          <canvas id="snake-canvas" width="400" height="400" aria-label="Snake game board"></canvas>
+          <p id="snake-score">Score: 0</p>
+          <div class="snake-controls" aria-label="Snake controls">
+            <button type="button" data-direction="up">Up</button>
+            <div><button type="button" data-direction="left">Left</button><button type="button" data-direction="down">Down</button><button type="button" data-direction="right">Right</button></div>
+          </div>
+        </section>
       </section>
     </main>
     <script>
       const statusEl = document.getElementById('dev-status');
       const inputEl = document.getElementById('dev-input');
+      const snakeGame = document.getElementById('snake-game');
+      const snakeCanvas = document.getElementById('snake-canvas');
+      const snakeScore = document.getElementById('snake-score');
+      const snakeContext = snakeCanvas.getContext('2d');
+      const snakeSize = 20;
+      let snakeTimer = null;
+      let snakeState = null;
+      const drawSnake = () => {
+        if (!snakeState) return;
+        snakeContext.fillStyle = '#111'; snakeContext.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
+        snakeContext.strokeStyle = '#292424';
+        for (let line = 0; line <= snakeCanvas.width; line += snakeSize) { snakeContext.beginPath(); snakeContext.moveTo(line, 0); snakeContext.lineTo(line, snakeCanvas.height); snakeContext.stroke(); snakeContext.beginPath(); snakeContext.moveTo(0, line); snakeContext.lineTo(snakeCanvas.width, line); snakeContext.stroke(); }
+        snakeContext.fillStyle = '#eee'; snakeState.snake.forEach(part => snakeContext.fillRect(part.x * snakeSize + 2, part.y * snakeSize + 2, snakeSize - 4, snakeSize - 4));
+        snakeContext.fillStyle = '#999'; snakeContext.fillRect(snakeState.food.x * snakeSize + 5, snakeState.food.y * snakeSize + 5, snakeSize - 10, snakeSize - 10);
+      };
+      const setSnakeDirection = direction => { if (!snakeState) return; const opposites = {up:'down',down:'up',left:'right',right:'left'}; if (opposites[direction] !== snakeState.direction) snakeState.nextDirection = direction; };
+      const placeFood = () => { let food; do { food = {x:Math.floor(Math.random()*20), y:Math.floor(Math.random()*20)}; } while (snakeState.snake.some(part => part.x === food.x && part.y === food.y)); snakeState.food = food; };
+      const stepSnake = () => { const direction = snakeState.nextDirection; snakeState.direction = direction; const head = {...snakeState.snake[0]}; if (direction === 'up') head.y--; if (direction === 'down') head.y++; if (direction === 'left') head.x--; if (direction === 'right') head.x++; const hitWall = head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20; const hitSelf = snakeState.snake.some(part => part.x === head.x && part.y === head.y); if (hitWall || hitSelf) { clearInterval(snakeTimer); snakeTimer = null; statusEl.textContent = 'Snake ended. Type *#snake to restart.'; return; } snakeState.snake.unshift(head); if (head.x === snakeState.food.x && head.y === snakeState.food.y) { snakeState.score++; placeFood(); } else snakeState.snake.pop(); snakeScore.textContent = `Score: ${snakeState.score}`; drawSnake(); };
+      const startSnake = () => { clearInterval(snakeTimer); snakeGame.hidden = false; snakeState = {snake:[{x:10,y:10},{x:9,y:10},{x:8,y:10}],direction:'right',nextDirection:'right',food:{x:15,y:10},score:0}; snakeScore.textContent = 'Score: 0'; drawSnake(); snakeTimer = setInterval(stepSnake, 130); inputEl.blur(); };
+      document.getElementById('snake-close').addEventListener('click', () => { clearInterval(snakeTimer); snakeTimer = null; snakeGame.hidden = true; inputEl.focus(); });
+      document.querySelectorAll('[data-direction]').forEach(button => button.addEventListener('click', () => setSnakeDirection(button.dataset.direction)));
+      document.addEventListener('keydown', event => { const keys = {ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'}; if (keys[event.key]) { event.preventDefault(); setSnakeDirection(keys[event.key]); } });
       const submit = async () => {
         const raw = (inputEl.value || '').trim();
         if (!raw) {
@@ -32,6 +63,7 @@
         }
 
         const run = async () => {
+          if (raw === '*#snake') { startSnake(); return 'Snake started.'; }
           if (raw === '*#refresh') {
             const src = '../argus/data/chapters.json?ts=' + Date.now();
             const res = await fetch(src, { cache: 'no-cache' });

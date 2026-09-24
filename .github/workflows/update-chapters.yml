@@ -67,6 +67,7 @@ jobs:
           fi
       - name: Fetch PHOBO volumes (headless browser fallback)
         if: steps.cadence.outputs.run == 'true' && steps.phobia_plain.outputs.success != 'true'
+        continue-on-error: true
         run: |
           npm install --no-save --package-lock=false playwright
           npx playwright install --with-deps chromium

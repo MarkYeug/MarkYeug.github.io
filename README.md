@@ -12,7 +12,7 @@ export const BOOK = '35397598808248905';
 
 To use a different series, replace that book ID or set the `CATALOG_URL` environment variable when running the script. The URL must be the public WebNovel catalog URL. No WebNovel credentials, cookies, or API keys are required.
 
-The workflow runs every six hours and can also be started manually:
+The workflow checks every ten minutes but performs a refresh only at 8:10 AM and 8:10 PM Alaska time on Mondays and Fridays, and at midnight and noon Alaska time on other days. It can also be started manually:
 
 1. Open the repository's **Actions** tab.
 2. Select **Update chapter list**.

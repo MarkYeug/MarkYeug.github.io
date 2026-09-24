@@ -1,7 +1,7 @@
 name: Update chapter list
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "*/10 * * * *"
   workflow_dispatch:
 permissions:
   contents: write
@@ -26,15 +26,18 @@ jobs:
           local_day=$(TZ=America/Anchorage date +%u)
           local_hour=$(TZ=America/Anchorage date +%H)
           local_minute=$(TZ=America/Anchorage date +%M)
-          total_minutes=$((10#$local_hour * 60 + 10#$local_minute))
-          cadence=90
-          if [[ "$local_day" == "1" || "$local_day" == "5" ]]; then cadence=45; fi
-          if (( total_minutes % cadence == 0 )); then
+          run=false
+          if [[ "$local_day" == "1" || "$local_day" == "5" ]]; then
+            if [[ "$local_minute" == "10" && ( "$local_hour" == "08" || "$local_hour" == "20" ) ]]; then run=true; fi
+          elif [[ "$local_minute" == "00" && ( "$local_hour" == "00" || "$local_hour" == "12" ) ]]; then
+            run=true
+          fi
+          if [[ "$run" == "true" ]]; then
             echo "run=true" >> "$GITHUB_OUTPUT"
-            echo "Refreshing on weekday $local_day at ${local_hour}:${local_minute} with ${cadence}-minute cadence."
+            echo "Refreshing on weekday $local_day at ${local_hour}:${local_minute} Alaska time."
           else
             echo "run=false" >> "$GITHUB_OUTPUT"
-            echo "Skipping this 15-minute slot; next cadence is ${cadence} minutes."
+            echo "Skipping this 10-minute slot; it is outside the refresh schedule."
           fi
       - name: Fetch chapters (plain request)
         id: plain

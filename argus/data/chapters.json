@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "source": "https://www.webnovel.com/book/35397598808248905/catalog",
- "updated": "2026-09-23T22:12:22.511Z",
+ "updated": "2026-09-24T02:12:07.436Z",
  "volumes": [
   {
    "n": 1,
@@ -239,6 +239,12 @@
      "n": 36,
      "title": "The Painting & The Letter \"S\"",
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/the-painting-the-letter-%22s%22_99317396728241942",
+     "published": null
+    },
+    {
+     "n": 37,
+     "title": "Guilty By Design",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/guilty-by-design_99320475682927633",
      "published": null
     }
    ]

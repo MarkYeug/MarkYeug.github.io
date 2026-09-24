@@ -25,6 +25,7 @@ h1{font-size:clamp(2.2rem,6vw,3.8rem);line-height:1.02;margin:0 0 8px;letter-spa
 section h2{margin:34px 0 0;font-size:1.6rem}.arc{margin:0 0 10px;color:var(--gold);font-style:italic}
 ol{list-style:none;margin:0;padding:0}ol a{display:flex;gap:16px;padding:9px 12px;text-decoration:none;border-bottom:1px solid var(--line)}
 ol a:hover{background:var(--coal);color:var(--gold)}ol span{min-width:2.2em;font:700 1rem Tektur,sans-serif;color:var(--gold)}
+.release-date{margin-left:auto;color:var(--dim);font-size:.82rem;font-style:normal;white-space:nowrap}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;padding:20px 0 40px}
 article,.card{border:1px solid var(--gold);background:var(--coal) url(missing-texture.svg) no-repeat right 14px top 14px/34px;padding:20px 22px;text-decoration:none}
 article h2,.card h3{margin:0 0 6px;font-size:1.3rem}article p,.card p{margin:0;color:var(--dim)}
@@ -90,6 +91,12 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--dim);fon
 .phobia-page .tag,.phobia-page .gen{color:#aaa}
 .phobia-page .gen{font-family:Spectral,Georgia,serif;font-style:italic;letter-spacing:.05em}
 .phobia-page .phobia-copy{max-width:620px;color:#d2d2d2}
+.phobia-page #chapters{border-top:1px solid #303030;padding:28px 0 48px}
+.phobia-page #chapters h2{margin:28px 0 10px;color:#f1f1f1;font-family:UnifrakturCook,serif;font-size:2rem;font-weight:700}
+.phobia-page #chapters ol a{border-color:#303030;color:#d8d8d8}
+.phobia-page #chapters ol a:hover{background:#151515;color:#fff}
+.phobia-page #chapters ol span{color:#aaa}
+.phobia-page .release-date{color:#999}
 .phobia-page .btn{border-color:#aaa;background:#151515;color:#f1f1f1;box-shadow:5px 5px 0 #000;font-family:UnifrakturCook,serif;font-size:1.2rem;letter-spacing:.02em}
 .phobia-page .btn:hover{background:#f1f1f1;color:#080808}
 .phobia-page footer{border-color:#303030;color:#888}

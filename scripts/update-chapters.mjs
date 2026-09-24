@@ -3,10 +3,11 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { load } from 'cheerio';
 
-export const BOOK = '35397598808248905', ORIGIN = 'https://www.webnovel.com';
+export const BOOK = process.env.BOOK || '35397598808248905', ORIGIN = 'https://www.webnovel.com';
 export const CATALOG = process.env.CATALOG_URL || `${ORIGIN}/book/${BOOK}/catalog`;
-export const OUT = 'argus/data/chapters.json';
+export const OUT = process.env.OUT || 'argus/data/chapters.json';
 export const MODE = process.env.MODE || 'http';            // http | browser
+export const STANDALONE_VOLUMES = process.env.STANDALONE_VOLUMES === 'true';
 const UA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
 const CHAPTER_PATH = new RegExp(`^/book/[^/]+_${BOOK}/([^/]+_\\d+)/?$`);
 
@@ -34,15 +35,19 @@ async function viaBrowser() {
   } finally { await browser.close(); }
 }
 
-export function parse(html) {
+export function parse(html, { standaloneVolumes = STANDALONE_VOLUMES } = {}) {
   const $ = load(html), clean = s => (s || '').replace(/\s+/g, ' ').trim();
   const dateFrom = element => {
     const scope = $(element).closest('li, .chapter-item, .chapter, .volume-item');
-    const raw = scope.find('time[datetime], [data-time], [data-date], [datetime]').first().attr('datetime')
+    const raw = $(element).attr('datetime')
+      || $(element).attr('data-time')
+      || $(element).attr('data-date')
+      || scope.find('time[datetime], [data-time], [data-date], [datetime]').first().attr('datetime')
       || scope.find('[data-time], [data-date]').first().attr('data-time')
       || scope.find('[data-date]').first().attr('data-date');
     if (!raw) return null;
-    const date = new Date(raw);
+    const numeric = /^\d+$/.test(raw) ? Number(raw) * (raw.length === 10 ? 1000 : 1) : raw;
+    const date = new Date(numeric);
     return Number.isNaN(date.getTime()) ? null : date.toISOString();
   };
   const vols = $('.volume-item').length
@@ -81,11 +86,18 @@ export function parse(html) {
     i = j;
   }
   volumes.forEach(v => delete v.filler);
+  if (standaloneVolumes) {
+    return volumes.flatMap(v => v.chapters).map((chapter, index) => ({
+      n: index + 1,
+      name: chapter.title,
+      chapters: [{ ...chapter, n: index + 1 }]
+    }));
+  }
   return volumes;
 }
 
 export async function refreshChapters({ outputPath = OUT, mode = MODE, writeFile = true } = {}) {
-  const volumes = parse(mode === 'browser' ? await viaBrowser() : await viaHttp());
+  const volumes = parse(mode === 'browser' ? await viaBrowser() : await viaHttp(), { standaloneVolumes: STANDALONE_VOLUMES });
   const total = v => v.reduce((s, x) => s + x.chapters.length, 0);
   const prev = outputPath && writeFile && existsSync(outputPath) ? JSON.parse(readFileSync(outputPath, 'utf8')) : null;
   if (prev && JSON.stringify(prev.volumes) === JSON.stringify(volumes)) {

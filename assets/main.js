@@ -16,7 +16,7 @@ const ok=u=>{try{const x=new URL(u);return x.protocol==='https:'&&/(^|\.)webnove
 const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
 const load=async src=>{const ctl=new AbortController(),t=setTimeout(()=>ctl.abort(),15000);
 try{const r=await fetch(src,{cache:'no-cache',signal:ctl.signal});if(!r.ok)throw new Error(r.status);const d=await r.json();
-const v=(Array.isArray(d.volumes)?d.volumes:[]).map((v,i)=>({n:Number.isFinite(v.n)?v.n:i+1,name:String(v.name||''),c:(Array.isArray(v.chapters)?v.chapters:[]).filter(c=>c&&typeof c.title==='string'&&c.title.trim()&&Number.isFinite(c.n)&&ok(c.url))})).filter(v=>v.c.length);
+const v=(Array.isArray(d.volumes)?d.volumes:[]).map((v,i)=>({n:Number.isFinite(v.n)?v.n:i+1,name:String(v.name||''),c:(Array.isArray(v.chapters)?v.chapters:[]).filter(c=>c&&typeof c.title==='string'&&c.title.trim()&&Number.isFinite(c.n)&&ok(c.url)).map(c=>({...c,published:typeof c.published==='string'&&c.published?c.published:null}))})).filter(v=>v.c.length);
 if(!v.length)throw new Error('empty');return v}finally{clearTimeout(t)}};
 const ch=$('#chapters'),lt=$('#latest');
 const resolveDataSrc=(root)=>{
@@ -31,9 +31,10 @@ const resolveDataSrc=(root)=>{
   }
   return candidates[0] ? new URL(candidates[0], window.location.href).href : '/argus/data/chapters.json';
 };
+const dateText=date=>{if(!date)return '';const value=new Date(date);return Number.isNaN(value.getTime())?'':new Intl.DateTimeFormat('en-US',{year:'numeric',month:'short',day:'numeric'}).format(value)};
 const renderChapters=vols=>{const last=vols[vols.length-1].c.slice(-1)[0];
-if(ch){ch.replaceChildren(...vols.map(v=>{const s=el('section');s.append(el('h2','','Volume '+v.n));if(v.name)s.append(el('p','arc',v.name));const ol=el('ol');
-v.c.forEach(c=>{const li=el('li'),a=el('a');a.href=c.url;a.rel='noopener';a.append(el('span','',c.n),c.title);if(c===last)a.append(el('em','pill','Latest'));li.append(a);ol.append(li)});s.append(ol);return s}));ch.removeAttribute('aria-busy')}
+if(ch){ch.replaceChildren(...vols.map(v=>{const s=el('section'),volumeDate=dateText(v.c.find(c=>c.published)?.published),heading=`Vol. ${v.n} — ${v.name||'Untitled'}${volumeDate?' '+volumeDate:''}`;s.append(el('h2','',heading));const ol=el('ol');
+v.c.forEach(c=>{const li=el('li'),a=el('a');a.href=c.url;a.rel='noopener';a.append(el('span','',c.n),c.title);if(c.published)a.append(el('time','release-date',dateText(c.published)));if(c===last)a.append(el('em','pill','Latest'));li.append(a);ol.append(li)});s.append(ol);return s}));ch.removeAttribute('aria-busy')}
 if(lt){const a=el('a','','Chapter '+last.n+': '+last.title);a.href=last.url;a.rel='noopener';lt.replaceChildren('Latest chapter: ',a)}
 return last;};
 const refreshArgusChapters=async src=>{const dataSrc=src||resolveDataSrc(ch||lt);const vols=await load(dataSrc);return renderChapters(vols)};

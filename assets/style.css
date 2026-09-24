@@ -11,6 +11,8 @@ header{border-bottom:1px solid var(--line)}
 .nav{display:flex;flex-wrap:wrap;gap:8px 22px}
 .nav a{text-decoration:none;color:var(--dim);padding:4px 0;border-bottom:2px solid transparent}
 .nav a:hover,.nav a[aria-current]{color:var(--bone);border-color:var(--gold)}
+body:not(.home-page):not(.phobia-page) header .logo,body:not(.home-page):not(.phobia-page) header .nav a{color:var(--gold-hi)}
+body:not(.home-page):not(.phobia-page) header .nav a:hover,body:not(.home-page):not(.phobia-page) header .nav a[aria-current]{color:var(--gold-hi);border-color:var(--gold-hi)}
 .hero{display:grid;grid-template-columns:minmax(220px,340px) 1fr;gap:44px;align-items:center;padding:28px 0 44px}
 .cover{width:100%;display:block;border:2px solid var(--gold);box-shadow:0 0 46px rgba(212,175,55,.45),10px 10px 0 var(--coal);transform:rotate(-1.5deg)}
 h1{font-size:clamp(2.2rem,6vw,3.8rem);line-height:1.02;margin:0 0 8px;letter-spacing:.03em;text-shadow:2px 0 var(--gold-lo),-2px 0 var(--gold-hi)}
@@ -72,7 +74,10 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--dim);fon
 .home-page::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(8,6,7,.08) 0%,rgba(8,6,7,.25) 45%,rgba(0,0,0,.96) 100%)}
 .home-page::after{display:none}
 .home-page .wrap{max-width:1120px}
-.home-page .name{width:fit-content;max-width:100%;margin-top:clamp(40px,12vh,128px);padding:18px 26px 14px;background:rgba(8,6,7,.82);border-left:4px solid rgba(225,207,190,.72);border-bottom:1px solid rgba(225,207,190,.4);box-shadow:8px 8px 0 rgba(0,0,0,.55);font-size:clamp(4rem,13vw,9rem);line-height:.84;color:#e9ded1;text-shadow:3px 4px 0 rgba(18,12,13,.9),-1px -1px 0 rgba(255,255,255,.15)}
+.home-page main{position:relative}
+.home-page main::before{content:"";position:absolute;z-index:0;top:0;left:50%;width:100vw;height:clamp(250px,30vw,330px);transform:translateX(-50%);background:rgba(8,6,7,.82);border-bottom:1px solid rgba(225,207,190,.4);box-shadow:0 8px 0 rgba(0,0,0,.35)}
+.home-page main>*{position:relative;z-index:1}
+.home-page .name{width:fit-content;max-width:100%;margin-top:clamp(40px,12vh,128px);padding:18px 26px 14px;background:transparent;border:0;box-shadow:none;font-size:clamp(4rem,13vw,9rem);line-height:.84;color:#e9ded1;text-shadow:3px 4px 0 rgba(18,12,13,.9),-1px -1px 0 rgba(255,255,255,.15)}
 .home-page .tag{max-width:560px;margin-top:30px;color:#c6b5aa;font-size:1.08rem}
 .home-page section{max-width:920px;margin-top:clamp(64px,12vh,150px)}
 .home-page section h2{font-family:UnifrakturCook,serif;font-size:2.3rem;font-weight:700;letter-spacing:.02em;color:#e9ded1;text-shadow:2px 2px 0 #1a1112}
@@ -83,7 +88,8 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--dim);fon
 .home-page .card h3{font-family:UnifrakturCook,serif;font-size:1.65rem;font-weight:700;color:#eadfd2}
 .home-page .card p{color:#bdaea4}
 .home-page a.card:hover{background-color:rgba(48,29,32,.9);box-shadow:8px 9px 0 rgba(0,0,0,.62),inset 0 0 0 1px rgba(225,207,190,.28);color:#fff4e8;transform:translateY(-3px) rotate(0)}
-.home-page .ad-card{max-width:132px;min-height:132px;padding:0;background:#0b0809 url(missing-texture.svg) no-repeat center/42px}
+.home-page .book-links .ad-card,.home-page .book-links .ph-card{width:132px;height:132px;min-height:132px;max-width:132px;flex:0 0 132px;aspect-ratio:1;padding:0}
+.home-page .ad-card{background:#0b0809 url(missing-texture.svg) no-repeat center/42px}
 .home-page .ad-mark{font-family:UnifrakturCook,serif;font-size:2rem;letter-spacing:.02em;color:#eadfd2;text-shadow:2px 2px 0 #2e171b}
 .home-page .ph-card{max-width:132px;min-height:132px;padding:0;background:#070707;color:#f1f1f1}
 .home-page .ph-mark{font-family:UnifrakturCook,serif;font-size:1.65rem;letter-spacing:.02em;color:#f1f1f1;text-shadow:2px 2px 0 #000}

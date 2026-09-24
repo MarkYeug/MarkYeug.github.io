@@ -50,3 +50,24 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--dim);fon
 .fail{border:1px solid var(--gold-lo);background:var(--coal);padding:18px 22px;color:var(--gold-hi);font:700 1.1rem Tektur,sans-serif}
 .pill{margin-left:auto;align-self:center;font:700 .7rem Tektur,sans-serif;font-style:normal;background:var(--gold);color:var(--void);padding:1px 8px}
 #latest{margin:10px 0 0}#latest a{color:var(--gold-hi)}
+
+/* Homepage: an ink-and-paper treatment separate from the Argus pages. */
+.home-page{position:relative;isolation:isolate;min-height:100vh;background:#100d0d url(background.svg) center/cover fixed no-repeat;color:#eadfd2}
+.home-page::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(8,6,7,.08) 0%,rgba(8,6,7,.25) 45%,rgba(0,0,0,.96) 100%)}
+.home-page::after{display:none}
+.home-page .wrap{max-width:1120px}
+.home-page .name{margin-top:clamp(40px,12vh,128px);font-size:clamp(4rem,13vw,9rem);line-height:.84;color:#e9ded1;text-shadow:3px 4px 0 rgba(18,12,13,.9),-1px -1px 0 rgba(255,255,255,.15)}
+.home-page .tag{max-width:560px;color:#c6b5aa;font-size:1.08rem}
+.home-page section{max-width:920px;margin-top:clamp(64px,12vh,150px)}
+.home-page section h2{font-family:UnifrakturCook,serif;font-size:2.3rem;font-weight:700;letter-spacing:.02em;color:#e9ded1;text-shadow:2px 2px 0 #1a1112}
+.home-page .grid{grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;padding-top:14px}
+.home-page .card{position:relative;border:1px solid rgba(225,207,190,.55);border-radius:0;background:rgba(17,12,13,.78) url(missing-texture.svg) no-repeat right 14px top 14px/34px;padding:24px 22px;box-shadow:5px 5px 0 rgba(0,0,0,.5),inset 0 0 0 1px rgba(0,0,0,.65);transform:rotate(-.35deg)}
+.home-page .card:nth-child(even){transform:rotate(.45deg)}
+.home-page .card h3{font-family:UnifrakturCook,serif;font-size:1.65rem;font-weight:700;color:#eadfd2}
+.home-page .card p{color:#bdaea4}
+.home-page a.card:hover{background-color:rgba(48,29,32,.9);box-shadow:8px 9px 0 rgba(0,0,0,.62),inset 0 0 0 1px rgba(225,207,190,.28);color:#fff4e8;transform:translateY(-3px) rotate(0)}
+.home-page .ad-card{max-width:132px;min-height:132px;padding:0;background:#0b0809 url(missing-texture.svg) no-repeat center/42px}
+.home-page .ad-mark{font-family:UnifrakturCook,serif;font-size:2rem;letter-spacing:.02em;color:#eadfd2;text-shadow:2px 2px 0 #2e171b}
+.home-page .dev-letter:hover,.home-page .dev-letter:focus-visible{color:#fff4e8;border-color:#d7bdb0}
+.home-page footer{margin-top:clamp(72px,14vh,170px);border-color:rgba(225,207,190,.2);color:#9d8e87}
+@media(max-width:700px){.home-page .name{margin-top:48px;font-size:clamp(3.6rem,19vw,6rem)}.home-page section{margin-top:80px}.home-page .card,.home-page .card:nth-child(even){transform:none}}

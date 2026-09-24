@@ -68,6 +68,29 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--dim);fon
 .home-page a.card:hover{background-color:rgba(48,29,32,.9);box-shadow:8px 9px 0 rgba(0,0,0,.62),inset 0 0 0 1px rgba(225,207,190,.28);color:#fff4e8;transform:translateY(-3px) rotate(0)}
 .home-page .ad-card{max-width:132px;min-height:132px;padding:0;background:#0b0809 url(missing-texture.svg) no-repeat center/42px}
 .home-page .ad-mark{font-family:UnifrakturCook,serif;font-size:2rem;letter-spacing:.02em;color:#eadfd2;text-shadow:2px 2px 0 #2e171b}
+.home-page .ph-card{max-width:132px;min-height:132px;padding:0;background:#070707;color:#f1f1f1}
+.home-page .ph-mark{font-family:UnifrakturCook,serif;font-size:1.65rem;letter-spacing:.02em;color:#f1f1f1;text-shadow:2px 2px 0 #000}
 .home-page .dev-letter:hover,.home-page .dev-letter:focus-visible{color:#fff4e8;border-color:#d7bdb0}
 .home-page footer{margin-top:clamp(72px,14vh,170px);border-color:rgba(225,207,190,.2);color:#9d8e87}
 @media(max-width:700px){.home-page .name{margin-top:48px;font-size:clamp(3.6rem,19vw,6rem)}.home-page section{margin-top:80px}.home-page .card,.home-page .card:nth-child(even){transform:none}}
+
+.phobia-page{background:#080808;color:#e8e8e8}
+.phobia-page::after{display:none}
+.phobia-page header{border-bottom:1px solid #303030}
+.phobia-page .logo,.phobia-page .nav a{color:#cfcfcf}
+.phobia-page .nav a:hover,.phobia-page .nav a[aria-current]{color:#fff;border-color:#fff}
+.phobia-page main{position:relative}
+.phobia-page .phobia-hero{display:grid;grid-template-columns:minmax(220px,340px) 1fr;gap:44px;align-items:center;padding:48px 0 70px}
+.phobia-page .phobia-cover{position:relative;display:grid;place-items:center;aspect-ratio:2 / 3;background:#111;border:1px solid #777;box-shadow:12px 12px 0 #000;color:#ededed;text-align:center;transform:rotate(-1.4deg);overflow:hidden}
+.phobia-page .phobia-cover::before,.phobia-page .phobia-cover::after{content:"";position:absolute;background:#666}
+.phobia-page .phobia-cover::before{width:1px;height:130%;transform:rotate(17deg);opacity:.45}
+.phobia-page .phobia-cover::after{width:130%;height:1px;transform:rotate(-11deg);opacity:.3}
+.phobia-page .phobia-cover span{position:relative;z-index:1;padding:24px;font:700 clamp(1.8rem,5vw,3.7rem)/.88 UnifrakturCook,serif;letter-spacing:.02em;text-shadow:3px 3px 0 #000}
+.phobia-page h1{color:#f2f2f2;font-family:UnifrakturCook,serif;font-size:clamp(3rem,8vw,5.5rem);line-height:.85;letter-spacing:.01em;text-shadow:3px 3px 0 #000;animation:none}
+.phobia-page .tag,.phobia-page .gen{color:#aaa}
+.phobia-page .gen{font-family:Spectral,Georgia,serif;font-style:italic;letter-spacing:.05em}
+.phobia-page .phobia-copy{max-width:620px;color:#d2d2d2}
+.phobia-page .btn{border-color:#aaa;background:#151515;color:#f1f1f1;box-shadow:5px 5px 0 #000;font-family:UnifrakturCook,serif;font-size:1.2rem;letter-spacing:.02em}
+.phobia-page .btn:hover{background:#f1f1f1;color:#080808}
+.phobia-page footer{border-color:#303030;color:#888}
+@media(max-width:700px){.phobia-page .phobia-hero{grid-template-columns:1fr;padding-top:32px}.phobia-page .phobia-cover{max-width:300px;margin:0 auto}}

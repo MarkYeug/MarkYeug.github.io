@@ -73,7 +73,7 @@ jobs:
           SMTP_PASS: ${{ secrets.SMTP_PASS }}
           SMTP_FROM: ${{ secrets.SMTP_FROM }}
           EMAIL_TO: fabusunyow@gmail.com
-          EMAIL_SUBJECT: "Argus chapter data updated: {chapter_title}"
-          EMAIL_TEXT: "The generated chapter data changed. The latest chapter is {chapter_title}.\nURL: {chapter_url}"
+          EMAIL_SUBJECT: "Chapters have been refreshed!"
+          EMAIL_TEXT: "Chapters have been refreshed!\n\nThe latest chapter is {chapter_title}.\nRead it here: {chapter_url}"
           CHAPTERS_PATH: argus/data/chapters.json
         run: node scripts/send-update-email.mjs

@@ -39,6 +39,7 @@
       const snakeSize = 20;
       let snakeTimer = null;
       let snakeState = null;
+      let refreshTimer = null;
       const drawSnake = () => {
         if (!snakeState) return;
         snakeContext.fillStyle = '#111'; snakeContext.fillRect(0, 0, snakeCanvas.width, snakeCanvas.height);
@@ -51,6 +52,8 @@
       const placeFood = () => { let food; do { food = {x:Math.floor(Math.random()*20), y:Math.floor(Math.random()*20)}; } while (snakeState.snake.some(part => part.x === food.x && part.y === food.y)); snakeState.food = food; };
       const stepSnake = () => { const direction = snakeState.nextDirection; snakeState.direction = direction; const head = {...snakeState.snake[0]}; if (direction === 'up') head.y--; if (direction === 'down') head.y++; if (direction === 'left') head.x--; if (direction === 'right') head.x++; const hitWall = head.x < 0 || head.x >= 20 || head.y < 0 || head.y >= 20; const hitSelf = snakeState.snake.some(part => part.x === head.x && part.y === head.y); if (hitWall || hitSelf) { clearInterval(snakeTimer); snakeTimer = null; statusEl.textContent = 'Snake ended. Type *#snake to restart.'; return; } snakeState.snake.unshift(head); if (head.x === snakeState.food.x && head.y === snakeState.food.y) { snakeState.score++; placeFood(); } else snakeState.snake.pop(); snakeScore.textContent = `Score: ${snakeState.score}`; drawSnake(); };
       const startSnake = () => { clearInterval(snakeTimer); snakeGame.hidden = false; snakeState = {snake:[{x:10,y:10},{x:9,y:10},{x:8,y:10}],direction:'right',nextDirection:'right',food:{x:15,y:10},score:0}; snakeScore.textContent = 'Score: 0'; drawSnake(); snakeTimer = setInterval(stepSnake, 130); inputEl.blur(); };
+      const refreshCountdown = () => { const now = new Date(); const next = new Date(now); const nextHour = Math.ceil((now.getUTCHours() + 1) / 6) * 6; if (nextHour >= 24) { next.setUTCDate(next.getUTCDate() + 1); next.setUTCHours(0, 0, 0, 0); } else next.setUTCHours(nextHour, 0, 0, 0); const remaining = Math.max(0, next - now); const totalSeconds = Math.floor(remaining / 1000); const hours = Math.floor(totalSeconds / 3600); const minutes = Math.floor((totalSeconds % 3600) / 60); const seconds = totalSeconds % 60; return `Next chapter refresh in ${hours}h ${minutes}m ${seconds}s (UTC)`; };
+      const startRefreshCountdown = () => { clearInterval(refreshTimer); const update = () => { statusEl.className = 'dev-status ok'; statusEl.textContent = refreshCountdown(); }; update(); refreshTimer = setInterval(update, 1000); };
       document.getElementById('snake-close').addEventListener('click', () => { clearInterval(snakeTimer); snakeTimer = null; snakeGame.hidden = true; inputEl.focus(); });
       document.querySelectorAll('[data-direction]').forEach(button => button.addEventListener('click', () => setSnakeDirection(button.dataset.direction)));
       document.addEventListener('keydown', event => { const keys = {ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'}; if (keys[event.key]) { event.preventDefault(); setSnakeDirection(keys[event.key]); } });
@@ -64,6 +67,7 @@
 
         const run = async () => {
           if (raw === '*#snake') { startSnake(); return 'Snake started.'; }
+          if (raw.toLowerCase() === 'when') { startRefreshCountdown(); return refreshCountdown(); }
           if (raw === '*#refresh') {
             const src = '../argus/data/chapters.json?ts=' + Date.now();
             const res = await fetch(src, { cache: 'no-cache' });

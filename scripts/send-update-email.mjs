@@ -7,8 +7,8 @@ const SMTP_PORT = Number(process.env.SMTP_PORT || '587');
 const SMTP_USER = process.env.SMTP_USER;
 const SMTP_PASS = process.env.SMTP_PASS;
 const SMTP_FROM = process.env.SMTP_FROM || SMTP_USER || 'noreply@localhost';
-const SUBJECT = process.env.EMAIL_SUBJECT || 'Website update notification';
-const TEXT = process.env.EMAIL_TEXT || 'A site update check completed.';
+const SUBJECT = process.env.EMAIL_SUBJECT || 'Chapters have been refreshed!';
+const TEXT = process.env.EMAIL_TEXT || 'Chapters have been refreshed!';
 const DATA_PATH = process.env.CHAPTERS_PATH || 'argus/data/chapters.json';
 
 function latestChapterDetails() {

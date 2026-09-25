@@ -26,12 +26,27 @@ async function viaBrowser() {
       viewport: { width: 1440, height: 1200 }
     });
     const page = await context.newPage();
-    await page.goto(CATALOG, { waitUntil: 'domcontentloaded', timeout: 60000 });
-    await page.waitForLoadState('networkidle', { timeout: 30000 }).catch(() => {});
-    await page.waitForSelector(`a[href*="_${BOOK}/"]`, { timeout: 45000 });
-    const html = await page.content();
-    await context.close();
-    return html;
+    let lastErr;
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        await page.goto(CATALOG, { waitUntil: 'domcontentloaded', timeout: 60000 });
+        await page.waitForLoadState('networkidle', { timeout: 30000 }).catch(() => {});
+        // 'attached' (not the default 'visible'): a chapter link can be present in the
+        // DOM but hidden behind an inactive tab/accordion. We only parse markup below,
+        // so it doesn't need to be on-screen — waiting for 'visible' was timing out on
+        // pages where the list loads but never becomes visually visible.
+        await page.waitForSelector(`a[href*="_${BOOK}/"]`, { state: 'attached', timeout: 45000 });
+        const html = await page.content();
+        await context.close();
+        return html;
+      } catch (e) {
+        lastErr = e;
+        const title = await page.title().catch(() => '(no title)');
+        console.error(`Browser attempt ${attempt} failed on page titled "${title}": ${e.message}`);
+        if (attempt < 2) await page.waitForTimeout(5000);
+      }
+    }
+    throw lastErr;
   } finally { await browser.close(); }
 }
 

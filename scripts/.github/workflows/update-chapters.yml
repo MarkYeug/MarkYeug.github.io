@@ -1,42 +1,108 @@
 name: Update chapter list
 on:
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "*/10 * * * *"
   workflow_dispatch:
-    inputs:
-      force:
-        description: "Overwrite even if fewer chapters are found"
-        type: boolean
-        default: false
 permissions:
   contents: write
 concurrency: update-chapters
 jobs:
   update:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
         with: { node-version: 22, cache: npm }
       - run: npm ci
+      - name: Check refresh cadence
+        id: cadence
+        shell: bash
+        run: |
+          if [[ "$GITHUB_EVENT_NAME" == "workflow_dispatch" ]]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          local_day=$(TZ=America/Anchorage date +%u)
+          local_hour=$(TZ=America/Anchorage date +%H)
+          local_minute=$(TZ=America/Anchorage date +%M)
+          minute_num=$((10#$local_minute))
+          run=false
+          if [[ "$local_day" == "1" || "$local_day" == "5" ]]; then
+            if [[ $minute_num -lt 5 && ( "$local_hour" == "08" || "$local_hour" == "20" ) ]]; then run=true; fi
+          elif [[ $minute_num -lt 5 && ( "$local_hour" == "00" || "$local_hour" == "12" ) ]]; then
+            run=true
+          fi
+          if [[ "$run" == "true" ]]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+            echo "Refreshing on weekday $local_day at ${local_hour}:${local_minute} Alaska time."
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "Skipping this 10-minute slot; it is outside the refresh schedule."
+          fi
       - name: Fetch chapters (plain request)
         id: plain
-        continue-on-error: true
-        run: node scripts/update-chapters.mjs
-        env: { FORCE: "${{ inputs.force }}" }
-      - name: Fetch chapters (headless browser fallback)
-        if: steps.plain.outcome == 'failure'
+        if: steps.cadence.outputs.run == 'true'
+        shell: bash
         run: |
-          npm install --no-save playwright
+          if node scripts/update-chapters.mjs; then
+            echo "success=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Plain request was unavailable; switching to Chromium."
+            echo "success=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Fetch chapters (headless browser fallback)
+        if: steps.cadence.outputs.run == 'true' && steps.plain.outputs.success != 'true'
+        run: |
+          npm install --no-save --package-lock=false playwright
           npx playwright install --with-deps chromium
           node scripts/update-chapters.mjs
-        env: { MODE: browser, FORCE: "${{ inputs.force }}" }
-      - name: Commit if changed
+        env: { MODE: browser }
+      - name: Fetch PHOBO volumes (plain request)
+        id: phobia_plain
+        if: steps.cadence.outputs.run == 'true'
+        shell: bash
         run: |
-          git diff --quiet -- argus/data/chapters.json && { echo "Nothing to commit"; exit 0; }
+          if BOOK=36883184700098805 CATALOG_URL=https://www.webnovel.com/book/36883184700098805/catalog OUT=phobia/data/chapters.json STANDALONE_VOLUMES=true node scripts/update-chapters.mjs; then
+            echo "success=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Plain PHOBO request was unavailable; switching to Chromium."
+            echo "success=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Fetch PHOBO volumes (headless browser fallback)
+        if: steps.cadence.outputs.run == 'true' && steps.phobia_plain.outputs.success != 'true'
+        continue-on-error: true
+        run: |
+          npm install --no-save --package-lock=false playwright
+          npx playwright install --with-deps chromium
+          BOOK=36883184700098805 CATALOG_URL=https://www.webnovel.com/book/36883184700098805/catalog OUT=phobia/data/chapters.json STANDALONE_VOLUMES=true MODE=browser node scripts/update-chapters.mjs
+      - name: Commit if changed
+        id: commit
+        if: steps.cadence.outputs.run == 'true'
+        run: |
+          if git diff --quiet -- argus/data/chapters.json phobia/data/chapters.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Nothing to commit"
+            exit 0
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add argus/data/chapters.json
+          git add argus/data/chapters.json phobia/data/chapters.json
           git commit -m "Update chapter list"
+          git reset --hard HEAD
+          git clean -fd node_modules
           git pull --rebase && git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+      - name: Send email only on chapter data change
+        if: steps.cadence.outputs.run == 'true' && steps.commit.outputs.changed == 'true'
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          EMAIL_TO: fabusunyow@gmail.com
+          EMAIL_SUBJECT: "Chapters have been refreshed!"
+          EMAIL_TEXT: "Chapters have been refreshed!\n\nThe latest chapter is {chapter_title}.\nRead it here: {chapter_url}"
+          CHAPTERS_PATH: argus/data/chapters.json
+        run: node scripts/send-update-email.mjs

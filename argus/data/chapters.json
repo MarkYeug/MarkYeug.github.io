@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "source": "https://www.webnovel.com/book/35397598808248905/catalog",
- "updated": "2026-09-24T02:12:07.436Z",
+ "updated": "2026-09-26T12:56:30.103Z",
  "volumes": [
   {
    "n": 1,
@@ -245,6 +245,12 @@
      "n": 37,
      "title": "Guilty By Design",
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/guilty-by-design_99320475682927633",
+     "published": null
+    },
+    {
+     "n": 38,
+     "title": "Gumshoe Office",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/gumshoe-office_99321238308045746",
      "published": null
     }
    ]

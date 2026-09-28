@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "source": "https://www.webnovel.com/book/35397598808248905/catalog",
- "updated": "2026-09-26T12:56:30.103Z",
+ "updated": "2026-09-28T22:21:14.104Z",
  "volumes": [
   {
    "n": 1,
@@ -251,6 +251,12 @@
      "n": 38,
      "title": "Gumshoe Office",
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/gumshoe-office_99321238308045746",
+     "published": null
+    },
+    {
+     "n": 39,
+     "title": "Plan-Solve-Mercy",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/plan-solve-mercy_99349917146869685",
      "published": null
     }
    ]

@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "source": "https://www.webnovel.com/book/35397598808248905/catalog",
- "updated": "2026-09-28T22:21:14.104Z",
+ "updated": "2026-10-05T18:05:15.622Z",
  "volumes": [
   {
    "n": 1,
@@ -257,6 +257,18 @@
      "n": 39,
      "title": "Plan-Solve-Mercy",
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/plan-solve-mercy_99349917146869685",
+     "published": null
+    },
+    {
+     "n": 40,
+     "title": "Last Call & The Letter \"C\"",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/last-call-the-letter-%22c%22_99363018273517364",
+     "published": null
+    },
+    {
+     "n": 41,
+     "title": "Dead Ringer",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/dead-ringer_99502492101954094",
      "published": null
     }
    ]

@@ -12,7 +12,7 @@ export const BOOK = '35397598808248905';
 
 To use a different series, replace that book ID or set the `CATALOG_URL` environment variable when running the script. The URL must be the public WebNovel catalog URL. No WebNovel credentials, cookies, or API keys are required.
 
-The workflow checks every ten minutes but performs a refresh only at 8:10 AM and 8:10 PM Alaska time on Mondays and Fridays, and at midnight and noon Alaska time on other days. It can also be started manually:
+The workflow wakes up every ten minutes during the relevant hours, but only refreshes inside these Alaska-time windows: 8:10-8:29 AM and 8:10-8:29 PM on Mondays and Fridays, and 12:00-12:19 AM and PM on other days. The windows are deliberately wide because GitHub often starts scheduled runs several minutes late; an exact-minute check would miss them. It can also be started manually:
 
 1. Open the repository's **Actions** tab.
 2. Select **Update chapter list**.

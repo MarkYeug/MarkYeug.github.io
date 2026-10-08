@@ -1,0 +1,9 @@
+# One YouTube link per line. Used ONLY by scripts/build-playlist.mjs to look up each video's
+# title and channel name (public oEmbed lookup - nothing is downloaded).
+https://youtu.be/poKI_MY0Bkw
+https://youtu.be/8i0UdD-xSRw
+https://youtu.be/PLK1XwxlEQI
+https://youtu.be/_BEWbq64zyU
+https://youtu.be/3gkSzjp-aoY
+https://youtu.be/bOYfFQSDTiw
+https://youtu.be/i00NxSbnfFc

@@ -1,0 +1,169 @@
+{
+ "_readme": "Soundtrack flags for the Argus chapter list (kept separate because chapters.json is auto-generated and gets overwritten). Key = chapter number. To add music: set \"soundtrack\": true and put the YouTube link in \"url\". Chapters not listed here count as false.",
+ "chapters": {
+  "1": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "2": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "3": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "4": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "5": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "6": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "7": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "8": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "9": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "10": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "11": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "12": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "13": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "14": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "15": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "16": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "17": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "18": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "19": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "20": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "21": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "22": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "23": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "24": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "25": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "26": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "27": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "28": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "29": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "30": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "31": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "32": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "33": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "34": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "35": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "36": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "37": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "38": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "39": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "40": {
+   "soundtrack": false,
+   "url": ""
+  },
+  "41": {
+   "soundtrack": false,
+   "url": ""
+  }
+ }
+}

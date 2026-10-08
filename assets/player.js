@@ -1,9 +1,10 @@
-// Site music player: fixed bottom-right, plays self-hosted audio from assets/music/playlist.json.
+// Site music player (HOME PAGE ONLY - it refuses to start anywhere else): fixed bottom-right, plays self-hosted audio from assets/music/playlist.json.
 // Desktop: always visible. Phones (<=640px): a music icon opens/closes it.
 // Playback position carries across page loads (this is a multi-page static site), but it never
 // auto-starts on a fresh visit - only when you were already playing and just clicked a link.
 (()=>{
 const S=document.currentScript;if(!S||!S.src)return;
+if(!document.body||!document.body.classList.contains('home-page'))return; // player is home-page only
 const ASSETS=new URL('./',S.src).href,LIST=new URL('music/playlist.json',ASSETS).href,KEY='site-player-v1';
 const css=document.createElement('link');css.rel='stylesheet';css.href=new URL('player.css',ASSETS).href;document.head.append(css);
 const mk=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};

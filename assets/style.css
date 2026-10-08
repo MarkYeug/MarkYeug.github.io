@@ -28,8 +28,8 @@ h1{font-size:clamp(2.2rem,6vw,3.8rem);line-height:1.02;margin:0 0 8px;letter-spa
 #banner{font:700 1.6rem Tektur,sans-serif;margin:0}#status{margin:4px 0 0;color:var(--dim)}#count{font:700 2rem Tektur,sans-serif;color:var(--bone)}
 .release{border-top:2px solid var(--gold);padding:22px 0 40px}
 section h2{margin:34px 0 0;font-size:1.6rem}
-ol{list-style:none;margin:0;padding:0}ol a{display:flex;gap:16px;padding:9px 12px;text-decoration:none;border-bottom:1px solid var(--line)}
-ol a:hover{background:var(--coal);color:var(--gold)}ol span{min-width:2.2em;font:700 1rem Tektur,sans-serif;color:var(--gold)}
+ol{list-style:none;margin:0;padding:0}ol li{display:flex;align-items:stretch;border-bottom:1px solid var(--line)}ol li>a:first-child{flex:1;min-width:0;display:flex;gap:16px;padding:9px 12px;text-decoration:none}
+ol li:hover{background:var(--coal)}ol li:hover>a:first-child{color:var(--gold)}ol span{min-width:2.2em;font:700 1rem Tektur,sans-serif;color:var(--gold)}
 .release-date{margin-left:auto;color:var(--dim);font-size:.82rem;font-style:normal;white-space:nowrap}
 .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;padding:20px 0 40px}
 article,.card{border:1px solid var(--gold);background:var(--coal) url(missing-texture.svg) no-repeat right 14px top 14px/34px;padding:20px 22px;text-decoration:none}
@@ -69,7 +69,11 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--dim);fon
 @media(prefers-reduced-motion:reduce){.hero h1{animation:none}.cover{transform:none}}
 
 .fail{border:1px solid var(--gold-lo);background:var(--coal);padding:18px 22px;color:var(--gold-hi);font:700 1.1rem Tektur,sans-serif}
-.pill{margin-left:auto;align-self:center;font:700 .7rem Tektur,sans-serif;font-style:normal;background:var(--gold);color:var(--void);padding:1px 8px}
+.pill{margin:0 12px 0 0;align-self:center;font:700 .7rem Tektur,sans-serif;font-style:normal;background:var(--gold);color:var(--void);padding:1px 8px}
+/* Chapter soundtrack icon (sits just before the Latest pill) */
+.music{align-self:center;display:grid;place-items:center;width:34px;height:34px;margin:0 8px 0 0;color:var(--gold);border:1px solid var(--gold-lo);text-decoration:none}
+.music svg{width:18px;height:18px;fill:currentColor}.music:hover{background:var(--gold);color:var(--void)}
+.sound-frame{position:relative;aspect-ratio:16/9;border:2px solid var(--gold);background:#000;box-shadow:0 0 46px rgba(212,175,55,.3),8px 8px 0 var(--coal)}.sound-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 #latest{margin:10px 0 0}#latest a{color:var(--gold-hi)}
 
 /* Homepage: an ink-and-paper treatment separate from the Argus pages. */
@@ -113,8 +117,8 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--dim);fon
 .phobia-page .phobia-copy{max-width:620px;color:#d2d2d2}
 .phobia-page #chapters{border-top:1px solid #303030;padding:28px 0 48px}
 .phobia-page #chapters h2{margin:28px 0 10px;color:#f1f1f1;font-family:Spectral,Georgia,serif;font-size:2rem;font-weight:600;letter-spacing:.04em}
-.phobia-page #chapters ol a{border-color:#303030;color:#d8d8d8}
-.phobia-page #chapters ol a:hover{background:#151515;color:#fff}
+.phobia-page #chapters ol li{border-color:#303030}.phobia-page #chapters ol a{color:#d8d8d8}
+.phobia-page #chapters ol li:hover{background:#151515}.phobia-page #chapters ol li:hover>a:first-child{color:#fff}
 .phobia-page #chapters ol span{color:#aaa}
 .phobia-page .release-date{color:#999}
 .phobia-page .btn{border-color:#aaa;background:#151515;color:#f1f1f1;box-shadow:5px 5px 0 #000;font-family:Spectral,Georgia,serif;font-size:1.1rem;font-weight:600;letter-spacing:.04em}

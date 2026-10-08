@@ -21,3 +21,11 @@ The workflow first tries a normal request. If WebNovel serves a challenge page o
 The workflow first tries a normal request. If WebNovel serves a challenge page or blocks that request, it installs Chromium and retries through a headless browser. Every successful non-empty fetch becomes the new generated JSON, including legitimate removals or reorganizations. A failed, blocked, or empty fetch never overwrites the existing valid list.
 
 After a successful run, the workflow commits the changed JSON. GitHub Pages then serves the updated chapter list on the next deployment.
+
+## Chapter soundtracks
+
+`argus/data/soundtracks.json` (hand-edited, not touched by the updater) flags which Argus chapters have music. Key = chapter number. Set `"soundtrack": true` and paste the YouTube link in `"url"` and a music icon appears on that chapter's row (before the "Latest" pill). It opens `argus/soundtrack/?v=<id>` in a new tab, which plays the video on loop. Chapters set to `false` or missing show nothing.
+
+## Site music player
+
+The bottom-right music player only runs on the home page (`player.js` exits unless `<body class="home-page">`, and the script tag is removed from every other page).

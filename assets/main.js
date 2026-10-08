@@ -18,6 +18,13 @@ const load=async src=>{const ctl=new AbortController(),t=setTimeout(()=>ctl.abor
 try{const r=await fetch(src,{cache:'no-cache',signal:ctl.signal});if(!r.ok)throw new Error(r.status);const d=await r.json();
 const v=(Array.isArray(d.volumes)?d.volumes:[]).map((v,i)=>({n:Number.isFinite(v.n)?v.n:i+1,name:String(v.name||''),c:(Array.isArray(v.chapters)?v.chapters:[]).filter(c=>c&&typeof c.title==='string'&&c.title.trim()&&Number.isFinite(c.n)&&ok(c.url)).map(c=>({...c,published:typeof c.published==='string'&&c.published?c.published:null}))})).filter(v=>v.c.length);
 if(!v.length)throw new Error('empty');return v}finally{clearTimeout(t)}};
+const ytId=u=>{try{const x=new URL(u),h=x.hostname.replace(/^www\.|^m\.|^music\./,'');let id=h==='youtu.be'?x.pathname.slice(1):h==='youtube.com'?(x.searchParams.get('v')||(x.pathname.match(/^\/(?:embed|shorts|live)\/([^/]+)/)||[])[1]):'';return /^[\w-]{11}$/.test(id||'')?id:''}catch{return ''}};
+const okYT=u=>{try{const x=new URL(u);return x.protocol==='https:'&&/^(www\.|m\.|music\.)?(youtube\.com|youtu\.be)$/.test(x.hostname)}catch{return false}};
+// chapter number -> link to its soundtrack (only chapters flagged true with a valid YouTube link). Never fatal.
+const loadMusic=async src=>{const m=new Map();if(!src)return m;try{const r=await fetch(src,{cache:'no-cache'});if(!r.ok)throw 0;const d=await r.json(),o=d&&d.chapters||{};
+for(const k of Object.keys(o)){const e=o[k];if(!e||e.soundtrack!==true||typeof e.url!=='string'||!okYT(e.url.trim()))continue;const u=e.url.trim(),id=ytId(u);
+m.set(+k,id?new URL('../soundtrack/?v='+id,src).href:u)}}catch{}return m};
+const noteIcon='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 3v11.3A3.5 3.5 0 1 0 11 17.5V8h7V3z"/></svg>';
 const ch=$('#chapters'),lt=$('#latest');
 const resolveDataSrc=(root)=>{
   const candidates=[];
@@ -32,12 +39,13 @@ const resolveDataSrc=(root)=>{
   return candidates[0] ? new URL(candidates[0], window.location.href).href : '/argus/data/chapters.json';
 };
 const dateText=date=>{if(!date)return '';const value=new Date(date);return Number.isNaN(value.getTime())?'':new Intl.DateTimeFormat('en-US',{year:'numeric',month:'short',day:'numeric'}).format(value)};
-const renderChapters=vols=>{const last=vols[vols.length-1].c.slice(-1)[0];
+const renderChapters=(vols,music=new Map())=>{const last=vols[vols.length-1].c.slice(-1)[0];
 if(ch){ch.replaceChildren(...vols.map(v=>{const s=el('section'),volumeDate=dateText(v.c.find(c=>c.published)?.published),heading=`Vol. ${v.n} — ${v.name||'Untitled'}${volumeDate?' '+volumeDate:''}`;s.append(el('h2','',heading));const ol=el('ol');
-v.c.forEach(c=>{const li=el('li'),a=el('a');a.href=c.url;a.rel='noopener';a.append(el('span','',c.n),c.title);if(c.published)a.append(el('time','release-date',dateText(c.published)));if(c===last)a.append(el('em','pill','Latest'));li.append(a);ol.append(li)});s.append(ol);return s}));ch.removeAttribute('aria-busy')}
+v.c.forEach(c=>{const li=el('li'),a=el('a');a.href=c.url;a.rel='noopener';a.append(el('span','',c.n),c.title);if(c.published)a.append(el('time','release-date',dateText(c.published)));li.append(a);const mu=music.get(c.n);if(mu){const l=el('a','music');l.href=mu;l.target='_blank';l.rel='noopener noreferrer';l.title='Soundtrack for this chapter (opens in a new tab)';l.setAttribute('aria-label','Chapter '+c.n+' soundtrack, opens in a new tab');l.innerHTML=noteIcon;li.append(l)}
+if(c===last)li.append(el('em','pill','Latest'));ol.append(li)});s.append(ol);return s}));ch.removeAttribute('aria-busy')}
 if(lt){const a=el('a','','Chapter '+last.n+': '+last.title);a.href=last.url;a.rel='noopener';lt.replaceChildren('Latest chapter: ',a)}
 return last;};
-const refreshArgusChapters=async src=>{const dataSrc=src||resolveDataSrc(ch||lt);const vols=await load(dataSrc);return renderChapters(vols)};
+const refreshArgusChapters=async src=>{const dataSrc=src||resolveDataSrc(ch||lt),ms=ch&&ch.dataset.soundtracks;const [vols,music]=await Promise.all([load(dataSrc),loadMusic(ms?new URL(ms,window.location.href).href:'')]);return renderChapters(vols,music)};
 window.refreshArgusChapters=refreshArgusChapters;
 if(ch||lt){
   const showFailure = () => {

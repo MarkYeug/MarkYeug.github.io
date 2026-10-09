@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "source": "https://www.webnovel.com/book/35397598808248905/catalog",
- "updated": "2026-10-05T18:05:15.622Z",
+ "updated": "2026-10-09T18:17:33.858Z",
  "volumes": [
   {
    "n": 1,
@@ -269,6 +269,12 @@
      "n": 41,
      "title": "Dead Ringer",
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/dead-ringer_99502492101954094",
+     "published": null
+    },
+    {
+     "n": 42,
+     "title": "Dressed To Kill",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/dressed-to-kill_99508752151004487",
      "published": null
     }
    ]

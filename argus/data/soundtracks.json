@@ -1,9 +1,7 @@
 {
  "_readme": "Soundtrack flags for the Argus chapter list (kept separate because chapters.json is auto-generated and gets overwritten). Key = chapter number. To add music: set \"soundtrack\": true and put the YouTube link in \"url\". Chapters not listed here count as false.",
  "chapters": {
-  "26": {
-   "soundtrack": true,
-   "url": "https://youtu.be/5Jfiucqd3Po"
-  }
+  "26": { "soundtrack": true, "url": "https://youtu.be/5Jfiucqd3Po" },
+  "43": { "soundtrack": true, "url": "https://youtu.be/iEu6np3h8bE" }
  }
 }

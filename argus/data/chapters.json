@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "source": "https://www.webnovel.com/book/35397598808248905/catalog",
- "updated": "2026-10-09T18:17:33.858Z",
+ "updated": "2026-10-12T03:00:14.648Z",
  "volumes": [
   {
    "n": 1,
@@ -275,6 +275,12 @@
      "n": 42,
      "title": "Dressed To Kill",
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/dressed-to-kill_99508752151004487",
+     "published": null
+    },
+    {
+     "n": 43,
+     "title": "House Of Cards - Part 1",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/house-of-cards---part-1_99639834955530814",
      "published": null
     }
    ]

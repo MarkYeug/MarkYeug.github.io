@@ -25,6 +25,10 @@ const loadMusic=async src=>{const m=new Map();if(!src)return m;try{const r=await
 for(const k of Object.keys(o)){const e=o[k];if(!e||e.soundtrack!==true||typeof e.url!=='string'||!okYT(e.url.trim()))continue;const u=e.url.trim(),id=ytId(u);
 m.set(+k,id?new URL('../soundtrack/?v='+id,src).href:u)}}catch{}return m};
 const noteIcon='<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 3v11.3A3.5 3.5 0 1 0 11 17.5V8h7V3z"/></svg>';
+// Volumes whose name ends in "Special Chapters" are listed as "Special Chapters: <rest of the name>" and sorted to the top.
+const SPECIAL=/[\s\-–—:]*special\s+chapters\s*$/i,isSpecial=v=>SPECIAL.test(v.name),isWeen=v=>/argus[\s-]*ween/i.test(v.name);
+const volTitle=v=>{if(!isSpecial(v))return `Vol. ${v.n} — ${v.name||'Untitled'}`;const t=v.name.replace(SPECIAL,'').trim();return t?`Special Chapters: ${t}`:'Special Chapters'};
+const pumpkinIcon='<svg viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path d="M15 8.5c-.2-3 1-5 3.8-6l.9 1.8c-1.5.6-2.1 1.7-2 4.2z" fill="#6b8f23"/><path d="M16 8c-2.6-1.9-8.6-1.4-11.4 2.8C2 14.6 2.1 20.3 5 24c2.5 3.1 6.6 3.8 11 3.8S24.5 27.1 27 24c2.9-3.7 3-9.4.4-13.2C24.6 6.6 18.6 6.1 16 8z" fill="#ff8a1f"/><path d="M16 8.2c-3 3.6-3 15.6 0 19.4M10.8 8.7c-3.6 3.8-3.8 14.8-.6 18.7M21.2 8.7c3.6 3.8 3.8 14.8.6 18.7" fill="none" stroke="#c45a00" stroke-width="1.1" stroke-linecap="round"/><path fill="#1b0d03" d="M8.4 16.2l3.4-3 1.1 3.8zM23.6 16.2l-3.4-3-1.1 3.8zM16 17.6l-1.7 2.8h3.4zM9.8 21.7l2 1.6 1.8-1.7 2.4 2.1 2.4-2.1 1.8 1.7 2-1.6c-.6 3.2-3.1 4.7-6.2 4.7s-5.6-1.5-6.2-4.7z"/></svg>';
 const ch=$('#chapters'),lt=$('#latest');
 const resolveDataSrc=(root)=>{
   const candidates=[];
@@ -40,7 +44,7 @@ const resolveDataSrc=(root)=>{
 };
 const dateText=date=>{if(!date)return '';const value=new Date(date);return Number.isNaN(value.getTime())?'':new Intl.DateTimeFormat('en-US',{year:'numeric',month:'short',day:'numeric'}).format(value)};
 const renderChapters=(vols,music=new Map())=>{const last=vols[vols.length-1].c.slice(-1)[0];
-if(ch){ch.replaceChildren(...vols.map(v=>{const s=el('section'),volumeDate=dateText(v.c.find(c=>c.published)?.published),heading=`Vol. ${v.n} — ${v.name||'Untitled'}${volumeDate?' '+volumeDate:''}`;s.append(el('h2','',heading));const ol=el('ol');
+if(ch){const shown=[...vols.filter(isSpecial),...vols.filter(v=>!isSpecial(v))];ch.replaceChildren(...shown.map(v=>{const s=el('section',(isSpecial(v)?'vol-special':'')+(isWeen(v)?' vol-argusween':'')),volumeDate=dateText(v.c.find(c=>c.published)?.published),heading=`${volTitle(v)}${volumeDate?' '+volumeDate:''}`,h=el('h2');if(isWeen(v)){const pk=el('span','pumpkin');pk.setAttribute('aria-hidden','true');pk.innerHTML=pumpkinIcon;h.append(pk)}h.append(heading);s.append(h);const ol=el('ol');
 v.c.forEach(c=>{const li=el('li'),a=el('a');a.href=c.url;a.rel='noopener';a.append(el('span','',c.n),c.title);if(c.published)a.append(el('time','release-date',dateText(c.published)));li.append(a);const mu=music.get(c.n);if(mu){const l=el('a','music');l.href=mu;l.target='_blank';l.rel='noopener noreferrer';l.title='Soundtrack for this chapter (opens in a new tab)';l.setAttribute('aria-label','Chapter '+c.n+' soundtrack, opens in a new tab');l.innerHTML=noteIcon;li.append(l)}
 if(c===last)li.append(el('em','pill','Latest'));ol.append(li)});s.append(ol);return s}));ch.removeAttribute('aria-busy')}
 if(lt){const a=el('a','','Chapter '+last.n+': '+last.title);a.href=last.url;a.rel='noopener';lt.replaceChildren('Latest chapter: ',a)}

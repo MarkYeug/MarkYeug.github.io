@@ -125,3 +125,39 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--dim);fon
 .phobia-page .btn:hover{background:#f1f1f1;color:#080808}
 .phobia-page footer{border-color:#303030;color:#888}
 @media(max-width:700px){.phobia-page .phobia-hero{grid-template-columns:1fr;padding-top:32px}.phobia-page .phobia-cover{max-width:300px;margin:0 auto}}
+
+/* Argus-Ween volumes in the chapter list: orange heading, pumpkin icon, orange accents */
+h2 .pumpkin{display:inline-block;width:1.05em;height:1.05em;margin-right:.45em;vertical-align:-.14em}
+h2 .pumpkin svg{display:block;width:100%;height:100%}
+.vol-argusween h2{color:#ff8c1a;text-shadow:0 0 18px rgba(255,140,26,.35)}
+.vol-argusween ol span{color:#ff8c1a}
+.vol-argusween ol li:hover>a:first-child{color:#ff8c1a}
+.vol-argusween .pill{background:#ff8c1a}
+
+/* Seasonal effects (assets/seasons.js). Every layer ignores clicks. Only falling leaves/snow sit in front of the page. */
+.season-canvas,.season-web,.season-ghost-layer{position:fixed;pointer-events:none}
+.season-canvas,.season-ghost-layer{inset:0;width:100%;height:100%}
+.season-canvas.back,.season-ghost-layer,.season-web{z-index:-1}
+.season-canvas.front{z-index:8}
+.season-ghost-layer{overflow:hidden}
+.season-ghost{position:absolute;left:0;top:0;width:var(--s,80px);opacity:.5;filter:drop-shadow(0 0 10px rgba(244,236,216,.55));will-change:transform}
+.season-ghost svg,.season-web svg{display:block;width:100%;height:100%}
+.season-ghost svg{height:auto}
+.season-web{width:clamp(130px,24vw,330px);height:clamp(130px,24vw,330px);color:rgba(244,236,216,.36)}
+.season-web.side{width:clamp(70px,11vw,170px);height:clamp(140px,22vw,340px);top:34%}
+.season-web.tl{top:0;left:0}
+.season-web.tr{top:0;right:0;transform:scaleX(-1)}
+.season-web.bl{bottom:0;left:0;transform:scaleY(-1)}
+.season-web.br{bottom:0;right:0;transform:scale(-1,-1)}
+.season-web.side.l{left:0}
+.season-web.side.r{right:0;transform:scaleX(-1)}
+
+/* January: countdown to the Argus Anniversary, then the anniversary greeting */
+.season-banner{text-align:center;padding:18px 16px 22px;background:linear-gradient(180deg,rgba(20,17,10,.96),rgba(8,7,6,.88));border-bottom:2px solid var(--gold);box-shadow:0 0 34px rgba(212,175,55,.3)}
+.season-banner .sb-title{margin:0 0 12px;font:700 clamp(1rem,2.6vw,1.4rem) Tektur,sans-serif;letter-spacing:.06em;color:var(--gold-hi)}
+.season-clock{display:flex;justify-content:center;gap:clamp(8px,2vw,18px)}
+.season-clock div{min-width:clamp(64px,15vw,124px);padding:10px 4px 8px;border:1px solid var(--gold);background:var(--coal)}
+.season-clock b{display:block;font:700 clamp(2rem,8vw,4.4rem)/1 Tektur,sans-serif;color:var(--gold-hi);text-shadow:0 0 22px rgba(212,175,55,.5)}
+.season-clock small{display:block;margin-top:6px;font:500 .78rem Tektur,sans-serif;letter-spacing:.06em;color:var(--dim)}
+.season-banner .sb-note{margin:12px 0 0;color:var(--dim);font-size:.9rem}
+.season-banner.party .sb-title{margin:0;font-size:clamp(1.5rem,5vw,2.6rem);text-shadow:0 0 26px rgba(212,175,55,.55)}

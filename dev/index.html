@@ -29,6 +29,7 @@
         </section>
       </section>
     </main>
+    <script src="../assets/seasons.js"></script>
     <script>
       const statusEl = document.getElementById('dev-status');
       const inputEl = document.getElementById('dev-input');
@@ -93,6 +94,15 @@
             const body = encodeURIComponent(latest);
             window.location.href = `mailto:fabusunyow@gmail.com?subject=${subject}&body=${body}`;
             return 'Opening your mail client with the latest chapter data attached.';
+          }
+
+          if (/^\*#season(\s|$)/i.test(raw)) {
+            if (!window.ArgusSeason) throw new Error('season script did not load');
+            const arg = raw.replace(/^\*#season/i, '').trim();
+            if (!arg) return ArgusSeason.current() + '\nUsage: *#season <halloween|thanksgiving|winter|newyear|anniversary|off|reset>';
+            if (/^(reset|clear|auto)$/i.test(arg)) return ArgusSeason.clear();
+            if (!ArgusSeason.isValid(arg)) throw new Error('unknown season "' + arg + '". Try halloween, thanksgiving, winter, newyear, anniversary, off, or reset');
+            return ArgusSeason.set(arg);
           }
 
           throw new Error('Unknown command');

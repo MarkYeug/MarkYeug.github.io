@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "source": "https://www.webnovel.com/book/35397598808248905/catalog",
- "updated": "2026-10-12T05:12:28.902Z",
+ "updated": "2026-10-14T01:42:08.850Z",
  "volumes": [
   {
    "n": 1,
@@ -279,8 +279,8 @@
     },
     {
      "n": 43,
-     "title": "House Of Cards - Part 1",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/house-of-cards---part-1_99639834955530814",
+     "title": "House Of Cards - Part 1 & The Letter \"R\"",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/house-of-cards---part-1-the-letter-%22r%22_99639834955530814",
      "published": null
     }
    ]
@@ -291,8 +291,20 @@
    "chapters": [
     {
      "n": 44,
-     "title": "Welcome... To Hound City...?",
-     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/welcome...-to-hound-city..._99787134751262818",
+     "title": "[Hound City 1/10]: Welcome... To Hound City...?",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/%5Bhound-city-1-10%5D-welcome...-to-hound-city..._99787134751262818",
+     "published": null
+    }
+   ]
+  },
+  {
+   "n": 4,
+   "name": "Argus-Ween 2026",
+   "chapters": [
+    {
+     "n": 45,
+     "title": "Argus-Ween '26 Special Chapter: Dial Negligence #427",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/argus-ween-'26-special-chapter-dial-negligence-427_99814495437779277",
      "published": null
     }
    ]

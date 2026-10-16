@@ -1,0 +1,46 @@
+name: Update PHOBO-PHOBIA chapters
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: update-phobo-phobia
+jobs:
+  update:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Fetch PHOBO-PHOBIA chapters (plain request)
+        id: plain
+        shell: bash
+        run: |
+          if BOOK=36883184700098805 CATALOG_URL=https://www.webnovel.com/book/36883184700098805/catalog OUT=phobia/data/chapters.json STANDALONE_VOLUMES=true node scripts/update-chapters.mjs; then
+            echo "success=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Plain request was unavailable or returned an invalid catalog; switching to Chromium."
+            echo "success=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Fetch PHOBO-PHOBIA chapters (headless browser fallback)
+        if: steps.plain.outputs.success != 'true'
+        run: |
+          npm install --no-save --package-lock=false playwright
+          npx playwright install --with-deps chromium
+          BOOK=36883184700098805 CATALOG_URL=https://www.webnovel.com/book/36883184700098805/catalog OUT=phobia/data/chapters.json STANDALONE_VOLUMES=true MODE=browser node scripts/update-chapters.mjs
+      - name: Commit refreshed PHOBO-PHOBIA list
+        run: |
+          if git diff --quiet -- phobia/data/chapters.json; then
+            echo "Generated file is byte-for-byte identical; nothing to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add phobia/data/chapters.json
+          git commit -m "Refresh PHOBO-PHOBIA chapter list"
+          git reset --hard HEAD
+          git clean -fd node_modules
+          git pull --rebase && git push

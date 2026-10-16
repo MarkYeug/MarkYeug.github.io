@@ -11,12 +11,10 @@ const SUBJECT = process.env.EMAIL_SUBJECT || 'Chapters have been refreshed!';
 const TEXT = process.env.EMAIL_TEXT || 'Chapters have been refreshed!';
 const DATA_PATH = process.env.CHAPTERS_PATH || 'argus/data/chapters.json';
 
-// Same rule as the site (assets/main.js): a chapter can be slotted into the catalog out of
-// sequence, so "latest" isn't always the last chapter in volume order. Prefer the real publish
-// date when both chapters being compared have one; otherwise fall back to WebNovel's chapter ID,
-// which is always assigned in publish order.
+// "Latest" is determined ONLY by the numeric ID at the very end of the literal WebNovel chapter URL.
+// Do not use the displayed chapter number (chapter.n), catalog order, stored ID fields, or publish dates.
+// IDs exceed Number.MAX_SAFE_INTEGER, so compare them as BigInt.
 function chapterId(chapter) {
-  if (chapter && typeof chapter.id === 'string' && chapter.id) return chapter.id;
   const m = typeof chapter?.url === 'string' ? chapter.url.match(/_(\d+)\/?$/) : null;
   return m ? m[1] : '0';
 }

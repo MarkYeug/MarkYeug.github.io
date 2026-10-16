@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "source": "https://www.webnovel.com/book/35397598808248905/catalog",
- "updated": "2026-10-16T05:52:23.683Z",
+ "updated": "2026-10-16T06:00:58.949Z",
  "volumes": [
   {
    "n": 1,
@@ -367,6 +367,13 @@
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/the-ministry-of-defense_99736813035382541",
      "published": null,
      "id": "99736813035382541"
+    },
+    {
+     "n": 50,
+     "title": "Dessert Time! & The Letter \"I\"",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/dessert-time!-the-letter-%22i%22_99861708402641522",
+     "published": null,
+     "id": "99861708402641522"
     }
    ]
   },
@@ -375,14 +382,14 @@
    "name": "Hound City Filler Arc",
    "chapters": [
     {
-     "n": 50,
+     "n": 51,
      "title": "[Hound City 1/10]: Welcome... To Hound City...?",
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/%5Bhound-city-1-10%5D-welcome...-to-hound-city..._99787134751262818",
      "published": null,
      "id": "99787134751262818"
     },
     {
-     "n": 51,
+     "n": 52,
      "title": "[Hound City 2/10]: Ichor",
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/%5Bhound-city-2-10%5D-ichor_99810453336670743",
      "published": null,
@@ -395,7 +402,7 @@
    "name": "Argus-Ween 2026 Special Chapters",
    "chapters": [
     {
-     "n": 52,
+     "n": 53,
      "title": "Argus-Ween '26 Special Chapter: Dial Negligence #427",
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/argus-ween-'26-special-chapter-dial-negligence-427_99879525000737479",
      "published": null,

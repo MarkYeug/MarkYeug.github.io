@@ -1,0 +1,41 @@
+/* Site music player. Colours come from each page's own theme variables (gold / phobia grey / home ink). */
+.mp{--mp-bg:rgba(20,17,10,.96);--mp-fg:var(--bone,#f4ecd8);--mp-dim:var(--dim,#b8a877);--mp-acc:var(--gold,#d4af37);--mp-hi:var(--gold-hi,#f6d365);--mp-line:var(--line,#2e2610);--mp-ink:var(--void,#080706);
+position:fixed;right:max(16px,env(safe-area-inset-right));bottom:max(16px,env(safe-area-inset-bottom));z-index:50;display:flex;flex-direction:column;align-items:flex-end;gap:10px;font:500 .85rem/1.3 Tektur,sans-serif;color:var(--mp-fg);letter-spacing:.02em}
+.home-page .mp{--mp-bg:rgba(17,12,13,.94);--mp-fg:#eadfd2;--mp-dim:#bdaea4;--mp-acc:rgba(225,207,190,.75);--mp-hi:#eadfd2;--mp-line:rgba(225,207,190,.22);--mp-ink:#100d0d}
+.mp *{box-sizing:border-box}
+body.has-mp{padding-bottom:calc(150px + env(safe-area-inset-bottom))}
+
+.mp-panel{width:min(320px,calc(100vw - 32px));padding:12px 14px;background:var(--mp-bg);border:1px solid var(--mp-acc);box-shadow:5px 5px 0 rgba(0,0,0,.6)}
+.mp-title{font-weight:700;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-artist{color:var(--mp-dim);font-size:.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:1.3em}
+.mp-seek{display:flex;align-items:center;gap:8px;margin:8px 0 6px}
+.mp-time{color:var(--mp-dim);font-size:.72rem;min-width:2.6em;font-variant-numeric:tabular-nums}
+.mp-time:last-child{text-align:right}
+.mp-ctl{display:flex;justify-content:center;gap:10px}
+.mp button{font:inherit;color:var(--mp-fg);background:transparent;border:1px solid var(--mp-acc);width:42px;height:38px;padding:0;display:grid;place-items:center;cursor:pointer;transition:background .15s,color .15s}
+.mp button:hover{background:var(--mp-acc);color:var(--mp-ink)}
+.mp button:focus-visible{outline:3px solid var(--mp-acc);outline-offset:3px}
+.mp button svg{width:18px;height:18px;fill:currentColor;display:block}
+.mp-play{width:52px!important}
+.mp-play .i-pause{display:none}.mp.is-playing .mp-play .i-play{display:none}.mp.is-playing .mp-play .i-pause{display:block}
+
+.mp-bar{-webkit-appearance:none;appearance:none;flex:1;min-width:0;height:20px;margin:0;background:transparent;cursor:pointer;--p:0%}
+.mp-bar:focus-visible{outline:3px solid var(--mp-acc);outline-offset:3px}
+.mp-bar::-webkit-slider-runnable-track{height:4px;background:linear-gradient(90deg,var(--mp-acc) var(--p),var(--mp-line) var(--p))}
+.mp-bar::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;margin-top:-4px;border:1px solid var(--mp-ink);border-radius:0;background:var(--mp-hi)}
+.mp-bar::-moz-range-track{height:4px;background:var(--mp-line)}
+.mp-bar::-moz-range-progress{height:4px;background:var(--mp-acc)}
+.mp-bar::-moz-range-thumb{width:12px;height:12px;border:1px solid var(--mp-ink);border-radius:0;background:var(--mp-hi)}
+
+/* The round-ish toggle only exists on small screens */
+.mp .mp-fab{display:none;width:48px;height:48px;background:var(--mp-bg);box-shadow:4px 4px 0 rgba(0,0,0,.6);position:relative}
+.mp-fab svg{width:22px;height:22px}
+.mp.is-playing .mp-fab::after{content:"";position:absolute;top:5px;right:5px;width:8px;height:8px;background:var(--mp-hi);animation:mp-pulse 1.4s ease-in-out infinite}
+@keyframes mp-pulse{50%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.mp.is-playing .mp-fab::after{animation:none}}
+
+@media (max-width:640px){
+  .mp .mp-fab{display:grid}
+  .mp:not(.is-open) .mp-panel{display:none}
+  body.has-mp{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+}

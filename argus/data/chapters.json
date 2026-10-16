@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "source": "https://www.webnovel.com/book/35397598808248905/catalog",
- "updated": "2026-10-16T04:58:45.769Z",
+ "updated": "2026-10-16T05:01:35.448Z",
  "volumes": [
   {
    "n": 1,
@@ -282,6 +282,42 @@
      "title": "House Of Cards - Part 1 & The Letter \"R\"",
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/house-of-cards---part-1-the-letter-%22r%22_99639834955530814",
      "published": null
+    },
+    {
+     "n": 44,
+     "title": "House Of Cards - Part 2",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/house-of-cards---part-2_99641255113321794",
+     "published": null
+    },
+    {
+     "n": 45,
+     "title": "House Of Cards - Part 3",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/house-of-cards---part-3_99645378281924668",
+     "published": null
+    },
+    {
+     "n": 46,
+     "title": "Gear Shifters",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/gear-shifters_99689660468489479",
+     "published": null
+    },
+    {
+     "n": 47,
+     "title": "Coalition VI: Bashnya",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/coalition-vi-bashnya_99713184272805060",
+     "published": null
+    },
+    {
+     "n": 48,
+     "title": "Red Herring",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/red-herring_99712254949257129",
+     "published": null
+    },
+    {
+     "n": 49,
+     "title": "The Ministry Of Defense",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/the-ministry-of-defense_99736813035382541",
+     "published": null
     }
    ]
   },
@@ -290,13 +326,13 @@
    "name": "Hound City Filler Arc",
    "chapters": [
     {
-     "n": 44,
+     "n": 50,
      "title": "[Hound City 1/10]: Welcome... To Hound City...?",
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/%5Bhound-city-1-10%5D-welcome...-to-hound-city..._99787134751262818",
      "published": null
     },
     {
-     "n": 45,
+     "n": 51,
      "title": "[Hound City 2/10]: Ichor",
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/%5Bhound-city-2-10%5D-ichor_99810453336670743",
      "published": null
@@ -308,7 +344,7 @@
    "name": "Argus-Ween 2026 Special Chapters",
    "chapters": [
     {
-     "n": 46,
+     "n": 52,
      "title": "Argus-Ween '26 Special Chapter: Dial Negligence #427",
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/argus-ween-'26-special-chapter-dial-negligence-427_99879525000737479",
      "published": null

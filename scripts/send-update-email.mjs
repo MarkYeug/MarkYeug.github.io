@@ -20,10 +20,8 @@ function chapterId(chapter) {
   const m = typeof chapter?.url === 'string' ? chapter.url.match(/_(\d+)\/?$/) : null;
   return m ? m[1] : '0';
 }
+// Highest WebNovel chapter ID always defines the latest chapter, regardless of publish-date metadata.
 function laterOf(a, b) {
-  const ad = a.published ? Date.parse(a.published) : NaN;
-  const bd = b.published ? Date.parse(b.published) : NaN;
-  if (!Number.isNaN(ad) && !Number.isNaN(bd)) return ad >= bd ? a : b;
   return BigInt(chapterId(a)) >= BigInt(chapterId(b)) ? a : b;
 }
 function latestChapterDetails() {

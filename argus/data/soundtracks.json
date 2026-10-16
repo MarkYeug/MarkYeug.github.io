@@ -1,8 +1,9 @@
 {
- "_readme": "Soundtrack flags for the Argus chapter list (kept separate because chapters.json is auto-generated and gets overwritten). Key = chapter number. To add music: set \"soundtrack\": true and put the YouTube link in \"url\". Chapters not listed here count as false.",
+ "_readme": "Soundtrack flags for the Argus chapter list (kept separate because chapters.json is auto-generated and gets overwritten). Key = the chapter's WebNovel ID: the number after the last underscore in the chapter's link (e.g. .../9th-bullet_95499079936699183 -> 95499079936699183). To add music: set \"soundtrack\": true and put the YouTube link in \"url\". \"title\" is just a label for you and is ignored by the site. Chapters not listed here count as false.",
  "chapters": {
-  "26": { "soundtrack": true, "url": "https://youtu.be/5Jfiucqd3Po" },
-  "43": { "soundtrack": true, "url": "https://youtu.be/iEu6np3h8bE" },
-  "45": { "soundtrack": true, "url": "https://youtu.be/Kxokim-Hkp4" }
+  "98879982494868141": { "soundtrack": true, "url": "https://youtu.be/5Jfiucqd3Po" },
+  "99639834955530814": { "soundtrack": true, "url": "https://youtu.be/iEu6np3h8bE" },
+  "99879525000737479": { "soundtrack": true, "url": "https://youtu.be/Kxokim-Hkp4" },
+  "99641255113321794": { "soundtrack": true, "url": "https://youtu.be/ikl1ZoUvRs4" }
  }
 }

@@ -12,15 +12,17 @@ export const BOOK = '35397598808248905';
 
 To use a different series, replace that book ID or set the `CATALOG_URL` environment variable when running the script. The URL must be the public WebNovel catalog URL. No WebNovel credentials, cookies, or API keys are required.
 
-The workflow wakes up every ten minutes during the relevant hours, but only refreshes inside these Alaska-time windows: 8:10-8:29 AM and 8:10-8:29 PM on Mondays and Fridays, and 12:00-12:19 AM and PM on other days. The windows are deliberately wide because GitHub often starts scheduled runs several minutes late; an exact-minute check would miss them. It can also be started manually:
+The workflow checks every ten minutes, but only refreshes inside these Alaska-time windows: 8:00-8:04 AM and 8:00-8:04 PM on Mondays and Fridays, and 12:00-12:04 AM and PM on other days. The windows account for GitHub's scheduled-run delays. You can also refresh manually:
 
 1. Open the repository's **Actions** tab.
 2. Select **Update chapter list**.
 3. Select **Run workflow**.
-The workflow first tries a normal request. If WebNovel serves a challenge page or blocks that request, it installs Chromium and retries through a headless browser. It only writes the generated JSON after it has found at least one complete chapter volume, and it refuses to overwrite a larger existing list unless `force` is enabled.
-The workflow first tries a normal request. If WebNovel serves a challenge page or blocks that request, it installs Chromium and retries through a headless browser. Every successful non-empty fetch becomes the new generated JSON, including legitimate removals or reorganizations. A failed, blocked, or empty fetch never overwrites the existing valid list.
 
-After a successful run, the workflow commits the changed JSON. GitHub Pages then serves the updated chapter list on the next deployment.
+Each successful refresh fetches and parses the full live WebNovel catalog again, extracts every chapter's numeric ID, and completely regenerates the chapter JSON. It does not compare the fetched chapter list with the previous version or refuse a smaller list; the current catalog is authoritative. The JSON's refresh timestamp is updated each time, so the workflow commits each successful refresh. A failed, blocked, or empty fetch never overwrites the existing list. If a normal request is blocked, the workflow retries through a headless Chromium browser.
+
+The website and update email determine the latest chapter by the **highest WebNovel chapter ID**, not by the chapter's displayed number, its position in a volume, or publish-date metadata. IDs are kept as strings and compared as integers so their large values are handled accurately.
+
+After a successful run, the workflow commits the regenerated JSON. GitHub Pages then serves the updated chapter list on the next deployment.
 
 ## Chapter soundtracks
 

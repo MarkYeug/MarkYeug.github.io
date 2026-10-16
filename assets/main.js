@@ -45,12 +45,11 @@ const resolveDataSrc=(root)=>{
   return candidates[0] ? new URL(candidates[0], window.location.href).href : '/argus/data/chapters.json';
 };
 const dateText=date=>{if(!date)return '';const value=new Date(date);return Number.isNaN(value.getTime())?'':new Intl.DateTimeFormat('en-US',{year:'numeric',month:'2-digit',day:'2-digit'}).format(value)};
-// "Latest" is determined ONLY by the numeric ID at the very end of the literal WebNovel chapter URL.
-// Do not use the displayed chapter number (c.n), catalog order, or publication-date metadata.
-// IDs exceed Number.MAX_SAFE_INTEGER, so compare them as BigInt.
-const idOf=c=>{try{return BigInt(chId(c.url)||'0')}catch{return 0n}};
-// Highest WebNovel chapter ID defines latest status, regardless of catalog order or publish-date metadata.
-const laterOf=(a,b)=>idOf(a)>=idOf(b)?a:b;
+// "Latest" is determined ONLY by the final numeric ID in the literal WebNovel chapter URL.
+// Never use chapter number, catalog position, stored id fields, or publication dates.
+// WebNovel IDs exceed Number.MAX_SAFE_INTEGER, so compare them as BigInt.
+const idOf=c=>{const id=chId(c?.url||'');return /^\d+$/.test(id)?BigInt(id):-1n};
+const laterOf=(a,b)=>idOf(a)>idOf(b)?a:b;
 // Sort order of the list: 'new' = newest first (the default on every load), 'old' = oldest first. Volume/chapter numbers (n) grow with newer ones.
 let order='new',cache=null;const sortBtn=$('#sort'),byN=(a,b)=>(order==='new'?-1:1)*(a.n-b.n);
 const syncSort=()=>{if(!sortBtn)return;const nf=order==='new',lab=sortBtn.querySelector('.sort-label');if(lab)lab.textContent=nf?'Newest first':'Oldest first';sortBtn.dataset.order=order;sortBtn.setAttribute('aria-label',`Showing ${nf?'newest':'oldest'} first. Switch to ${nf?'oldest':'newest'} first.`);sortBtn.hidden=false};

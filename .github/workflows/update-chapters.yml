@@ -1,0 +1,104 @@
+name: Update chapter list
+
+on:
+  schedule:
+    # Every 3 hours (UTC). Minute 17 rather than :00 because GitHub is busiest at the top of
+    # the hour and often delays or silently drops scheduled runs then.
+    - cron: "17 */3 * * *"
+  # Run it by hand: Actions tab -> Update chapter list -> Run workflow.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# One run at a time, so a manual run and a scheduled run never collide.
+concurrency:
+  group: update-chapters
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    outputs:
+      failed: ${{ steps.report.outputs.failed }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+
+      # A fetch step that fails does not stop the others (continue-on-error), so one book
+      # failing never blocks the other from updating. The "Report failures" step at the end
+      # turns any failure into a red run, which triggers the email job below.
+      - name: Fetch Argus chapters
+        id: argus
+        continue-on-error: true
+        timeout-minutes: 10
+        run: |
+          if node scripts/update-chapters.mjs; then exit 0; fi
+          echo "::warning::Plain request failed; retrying through headless Chromium."
+          npm install --no-save --package-lock=false playwright
+          npx playwright install --with-deps chromium
+          MODE=browser node scripts/update-chapters.mjs
+
+      - name: Commit if changed
+        id: commit
+        run: |
+          if git diff --quiet -- argus/data/chapters.json phobia/data/chapters.json; then
+            echo "No chapter changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add argus/data/chapters.json phobia/data/chapters.json
+          git commit -m "Update chapter list"
+          # Discard anything the installs above touched so the rebase starts from a clean tree.
+          git reset --hard HEAD
+          git pull --rebase
+          git push
+
+      - name: Report failures
+        id: report
+        if: ${{ !cancelled() }}
+        env:
+          ARGUS: ${{ steps.argus.outcome }}
+          COMMIT: ${{ steps.commit.outcome }}
+        run: |
+          failed=()
+          [[ "$ARGUS" == "failure" ]] && failed+=("Argus chapter fetch")
+          [[ "$PHOBIA" == "failure" ]] && failed+=("PHOBO-PHOBIA chapter fetch")
+          [[ "$COMMIT" == "failure" ]] && failed+=("committing the updated chapter list")
+          if (( ${#failed[@]} > 0 )); then
+            list=$(printf '%s; ' "${failed[@]}")
+            echo "failed=${list%; }" >> "$GITHUB_OUTPUT"
+            echo "::error::Failed: ${list%; }"
+            exit 1
+          fi
+
+  # Runs only when the update job failed at any step (including setup or a timeout).
+  notify-failure:
+    needs: update
+    if: ${{ failure() }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22, cache: npm }
+      - run: npm ci
+      - name: Email the failure
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          SMTP_FROM: ${{ secrets.SMTP_FROM }}
+          EMAIL_TO: markyeug@gmail.com
+          FAILED: ${{ needs.update.outputs.failed }}
+          TRIGGER: ${{ github.event_name }}
+          REPO: ${{ github.repository }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: node scripts/send-failure-email.mjs

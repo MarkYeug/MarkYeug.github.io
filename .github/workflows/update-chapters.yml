@@ -3,11 +3,6 @@ on:
   schedule:
     - cron: "*/10 * * * *"
   workflow_dispatch:
-    inputs:
-      force:
-        description: "Overwrite even if fewer chapters are found than are already saved"
-        type: boolean
-        default: false
 permissions:
   contents: write
 concurrency: update-chapters
@@ -49,12 +44,11 @@ jobs:
         id: plain
         if: steps.cadence.outputs.run == 'true'
         shell: bash
-        env: { FORCE: "${{ inputs.force }}" }
         run: |
           if node scripts/update-chapters.mjs; then
             echo "success=true" >> "$GITHUB_OUTPUT"
           else
-            echo "Plain request was unavailable, or returned fewer chapters than are already saved; switching to Chromium."
+            echo "Plain request was unavailable or returned an invalid catalog; switching to Chromium."
             echo "success=false" >> "$GITHUB_OUTPUT"
           fi
       - name: Fetch chapters (headless browser fallback)
@@ -63,7 +57,7 @@ jobs:
           npm install --no-save --package-lock=false playwright
           npx playwright install --with-deps chromium
           node scripts/update-chapters.mjs
-        env: { MODE: browser, FORCE: "${{ inputs.force }}" }
+        env: { MODE: browser }
       - name: Fetch PHOBO volumes (plain request)
         id: phobia_plain
         if: steps.cadence.outputs.run == 'true'
@@ -73,7 +67,7 @@ jobs:
           if BOOK=36883184700098805 CATALOG_URL=https://www.webnovel.com/book/36883184700098805/catalog OUT=phobia/data/chapters.json STANDALONE_VOLUMES=true node scripts/update-chapters.mjs; then
             echo "success=true" >> "$GITHUB_OUTPUT"
           else
-            echo "Plain PHOBO request was unavailable, or returned fewer chapters than are already saved; switching to Chromium."
+            echo "Plain PHOBO request was unavailable or returned an invalid catalog; switching to Chromium."
             echo "success=false" >> "$GITHUB_OUTPUT"
           fi
       - name: Fetch PHOBO volumes (headless browser fallback)
@@ -84,25 +78,44 @@ jobs:
           npx playwright install --with-deps chromium
           BOOK=36883184700098805 CATALOG_URL=https://www.webnovel.com/book/36883184700098805/catalog OUT=phobia/data/chapters.json STANDALONE_VOLUMES=true MODE=browser node scripts/update-chapters.mjs
         env: { FORCE: "${{ inputs.force }}" }
-      - name: Commit if changed
+      - name: Check whether chapter content changed
+        id: chapter_data
+        if: steps.cadence.outputs.run == 'true'
+        run: |
+          node --input-type=module <<'NODE'
+          import { readFileSync } from 'node:fs';
+          import { execFileSync } from 'node:child_process';
+          let changed = false;
+          for (const path of ['argus/data/chapters.json', 'phobia/data/chapters.json']) {
+            try {
+              const previous = JSON.parse(execFileSync('git', ['show', 'HEAD:' + path], { encoding: 'utf8' }));
+              const current = JSON.parse(readFileSync(path, 'utf8'));
+              if (JSON.stringify(previous.volumes) !== JSON.stringify(current.volumes)) changed = true;
+            } catch { changed = true; }
+          }
+          console.log('Chapter content changed:', changed);
+          const fs = await import('node:fs');
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, 'changed=' + changed + '\\n');
+          NODE
+      - name: Commit refreshed chapter lists
         id: commit
         if: steps.cadence.outputs.run == 'true'
         run: |
           if git diff --quiet -- argus/data/chapters.json phobia/data/chapters.json; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
-            echo "Nothing to commit"
+            echo "Generated files are byte-for-byte identical; nothing to commit."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add argus/data/chapters.json phobia/data/chapters.json
-          git commit -m "Update chapter list"
+          git commit -m "Refresh chapter lists"
           git reset --hard HEAD
           git clean -fd node_modules
           git pull --rebase && git push
           echo "changed=true" >> "$GITHUB_OUTPUT"
-      - name: Send email only on chapter data change
-        if: steps.cadence.outputs.run == 'true' && steps.commit.outputs.changed == 'true'
+      - name: Send email only when chapter content changes
+        if: steps.cadence.outputs.run == 'true' && steps.commit.outputs.changed == 'true' && steps.chapter_data.outputs.changed == 'true'
         env:
           SMTP_HOST: ${{ secrets.SMTP_HOST }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}

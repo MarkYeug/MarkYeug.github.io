@@ -62,7 +62,6 @@ jobs:
         id: phobia_plain
         if: steps.cadence.outputs.run == 'true'
         shell: bash
-        env: { FORCE: "${{ inputs.force }}" }
         run: |
           if BOOK=36883184700098805 CATALOG_URL=https://www.webnovel.com/book/36883184700098805/catalog OUT=phobia/data/chapters.json STANDALONE_VOLUMES=true node scripts/update-chapters.mjs; then
             echo "success=true" >> "$GITHUB_OUTPUT"
@@ -77,7 +76,6 @@ jobs:
           npm install --no-save --package-lock=false playwright
           npx playwright install --with-deps chromium
           BOOK=36883184700098805 CATALOG_URL=https://www.webnovel.com/book/36883184700098805/catalog OUT=phobia/data/chapters.json STANDALONE_VOLUMES=true MODE=browser node scripts/update-chapters.mjs
-        env: { FORCE: "${{ inputs.force }}" }
       - name: Check whether chapter content changed
         id: chapter_data
         if: steps.cadence.outputs.run == 'true'
@@ -95,7 +93,7 @@ jobs:
           }
           console.log('Chapter content changed:', changed);
           const fs = await import('node:fs');
-          fs.appendFileSync(process.env.GITHUB_OUTPUT, 'changed=' + changed + '\\n');
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `changed=${changed}\n`);
           NODE
       - name: Commit refreshed chapter lists
         id: commit

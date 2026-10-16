@@ -8,6 +8,7 @@ export const CATALOG = process.env.CATALOG_URL || `${ORIGIN}/book/${BOOK}/catalo
 export const OUT = process.env.OUT || 'argus/data/chapters.json';
 export const MODE = process.env.MODE || 'http';            // http | browser
 export const STANDALONE_VOLUMES = process.env.STANDALONE_VOLUMES === 'true';
+export const FORCE = process.env.FORCE === 'true';
 const UA = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0 Safari/537.36';
 const CHAPTER_PATH = new RegExp(`^/book/[^/]+_${BOOK}/([^/]+_\\d+)/?$`);
 
@@ -116,10 +117,22 @@ export function parse(html, { standaloneVolumes = STANDALONE_VOLUMES } = {}) {
   return volumes;
 }
 
-export async function refreshChapters({ outputPath = OUT, mode = MODE, writeFile = true } = {}) {
+export async function refreshChapters({ outputPath = OUT, mode = MODE, writeFile = true, force = FORCE } = {}) {
   const volumes = parse(mode === 'browser' ? await viaBrowser() : await viaHttp(), { standaloneVolumes: STANDALONE_VOLUMES });
   const total = v => v.reduce((s, x) => s + x.chapters.length, 0);
   const prev = outputPath && writeFile && existsSync(outputPath) ? JSON.parse(readFileSync(outputPath, 'utf8')) : null;
+  // Guard against a "successful" scrape that's actually a bot-check/stripped page: parse()
+  // only throws on literally zero chapters, so a page that leaks through with just a stray
+  // "Start Reading" link (1 chapter titled "read", say) would otherwise look like valid,
+  // smaller data and silently overwrite a good file. If the new count is lower than what's
+  // already on disk, refuse and leave the existing file alone — set FORCE=true (or the
+  // workflow's "force" input) on a run where chapters were genuinely removed on WebNovel.
+  if (prev && Array.isArray(prev.volumes) && !force) {
+    const prevTotal = total(prev.volumes), newTotal = total(volumes);
+    if (newTotal < prevTotal) {
+      throw new Error(`Refusing to overwrite: parsed only ${newTotal} chapter(s), but the existing file has ${prevTotal}. This usually means WebNovel served a blocked or incomplete page rather than the real catalog. Leaving the existing data untouched. Re-run with FORCE=true if chapters were genuinely removed.`);
+    }
+  }
   if (prev && JSON.stringify(prev.volumes) === JSON.stringify(volumes)) {
     return { changed: false, total: total(volumes), volumes, source: CATALOG, updated: new Date().toISOString() };
   }

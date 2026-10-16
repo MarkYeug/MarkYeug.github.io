@@ -3,6 +3,11 @@ on:
   schedule:
     - cron: "*/10 * * * *"
   workflow_dispatch:
+    inputs:
+      force:
+        description: "Overwrite even if fewer chapters are found than are already saved"
+        type: boolean
+        default: false
 permissions:
   contents: write
 concurrency: update-chapters
@@ -44,11 +49,12 @@ jobs:
         id: plain
         if: steps.cadence.outputs.run == 'true'
         shell: bash
+        env: { FORCE: "${{ inputs.force }}" }
         run: |
           if node scripts/update-chapters.mjs; then
             echo "success=true" >> "$GITHUB_OUTPUT"
           else
-            echo "Plain request was unavailable; switching to Chromium."
+            echo "Plain request was unavailable, or returned fewer chapters than are already saved; switching to Chromium."
             echo "success=false" >> "$GITHUB_OUTPUT"
           fi
       - name: Fetch chapters (headless browser fallback)
@@ -57,16 +63,17 @@ jobs:
           npm install --no-save --package-lock=false playwright
           npx playwright install --with-deps chromium
           node scripts/update-chapters.mjs
-        env: { MODE: browser }
+        env: { MODE: browser, FORCE: "${{ inputs.force }}" }
       - name: Fetch PHOBO volumes (plain request)
         id: phobia_plain
         if: steps.cadence.outputs.run == 'true'
         shell: bash
+        env: { FORCE: "${{ inputs.force }}" }
         run: |
           if BOOK=36883184700098805 CATALOG_URL=https://www.webnovel.com/book/36883184700098805/catalog OUT=phobia/data/chapters.json STANDALONE_VOLUMES=true node scripts/update-chapters.mjs; then
             echo "success=true" >> "$GITHUB_OUTPUT"
           else
-            echo "Plain PHOBO request was unavailable; switching to Chromium."
+            echo "Plain PHOBO request was unavailable, or returned fewer chapters than are already saved; switching to Chromium."
             echo "success=false" >> "$GITHUB_OUTPUT"
           fi
       - name: Fetch PHOBO volumes (headless browser fallback)
@@ -76,6 +83,7 @@ jobs:
           npm install --no-save --package-lock=false playwright
           npx playwright install --with-deps chromium
           BOOK=36883184700098805 CATALOG_URL=https://www.webnovel.com/book/36883184700098805/catalog OUT=phobia/data/chapters.json STANDALONE_VOLUMES=true MODE=browser node scripts/update-chapters.mjs
+        env: { FORCE: "${{ inputs.force }}" }
       - name: Commit if changed
         id: commit
         if: steps.cadence.outputs.run == 'true'

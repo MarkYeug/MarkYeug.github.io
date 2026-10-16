@@ -12,17 +12,19 @@ export const BOOK = '35397598808248905';
 
 To use a different series, replace that book ID or set the `CATALOG_URL` environment variable when running the script. The URL must be the public WebNovel catalog URL. No WebNovel credentials, cookies, or API keys are required.
 
-The workflow checks every ten minutes, but only refreshes inside these Alaska-time windows: 8:00-8:04 AM and 8:00-8:04 PM on Mondays and Fridays, and 12:00-12:04 AM and PM on other days. The windows account for GitHub's scheduled-run delays. You can also refresh manually:
+The **Update chapter list** workflow refreshes only Argus Directorates. It checks every ten minutes, but only runs inside these Alaska-time windows: 8:00-8:04 AM and 8:00-8:04 PM on Mondays and Fridays, and 12:00-12:04 AM and PM on other days. The windows account for GitHub's scheduled-run delays. You can also refresh Argus manually:
 
 1. Open the repository's **Actions** tab.
 2. Select **Update chapter list**.
 3. Select **Run workflow**.
 
-Each successful refresh fetches and parses the full live WebNovel catalog again, extracts every chapter's numeric ID, and completely regenerates the chapter JSON. It does not compare the fetched chapter list with the previous version or refuse a smaller list; the current catalog is authoritative. The JSON's refresh timestamp is updated each time, so the workflow commits each successful refresh. A failed, blocked, or empty fetch never overwrites the existing list. If a normal request is blocked, the workflow retries through a headless Chromium browser.
+Each successful Argus refresh fetches and parses the full live WebNovel catalog again, extracts every chapter's numeric ID, and completely regenerates `argus/data/chapters.json`. It does not compare the fetched chapter list with the previous version or refuse a smaller list; the current catalog is authoritative. A failed, blocked, or empty fetch never overwrites the existing list. If a normal request is blocked, the workflow retries through a headless Chromium browser.
 
-The website and update email determine the latest chapter by the **highest WebNovel chapter ID**, not by the chapter's displayed number, its position in a volume, or publish-date metadata. IDs are kept as strings and compared as integers so their large values are handled accurately.
+The website and update email determine the latest Argus chapter by the **highest WebNovel chapter ID**, not by displayed chapter number, volume position, or publish-date metadata. IDs are compared as integers so their large values are handled accurately.
 
-After a successful run, the workflow commits the regenerated JSON. GitHub Pages then serves the updated chapter list on the next deployment.
+**PHOBO-PHOBIA has its own separate workflow** named **Update PHOBO-PHOBIA chapters**. It is manual-only for now because that WebNovel book has no uploaded chapters yet, avoiding repeated scheduled failures and unnecessary browser-fallback time. When PHOBO-PHOBIA has chapters to refresh, run that workflow from **Actions → Update PHOBO-PHOBIA chapters → Run workflow**. It updates only `phobia/data/chapters.json` and does not affect Argus's schedule or list.
+
+After a successful run, the relevant workflow commits its regenerated JSON. GitHub Pages then serves the updated chapter list on the next deployment.
 
 ## Chapter soundtracks
 

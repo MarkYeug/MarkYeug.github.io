@@ -51,9 +51,8 @@ const dateText=date=>{if(!date)return '';const value=new Date(date);return Numbe
 // WebNovel's chapter ID (always assigned in publish order), kept as BigInt since these IDs are too
 // large for a JS number.
 const idOf=c=>{try{return BigInt(c.id||chId(c.url)||'0')}catch{return 0n}};
-const laterOf=(a,b)=>{const ad=a.published?Date.parse(a.published):NaN,bd=b.published?Date.parse(b.published):NaN;
-if(!Number.isNaN(ad)&&!Number.isNaN(bd))return ad>=bd?a:b;
-return idOf(a)>=idOf(b)?a:b};
+// Highest WebNovel chapter ID defines latest status, regardless of catalog order or publish-date metadata.
+const laterOf=(a,b)=>idOf(a)>=idOf(b)?a:b;
 // Sort order of the list: 'new' = newest first (the default on every load), 'old' = oldest first. Volume/chapter numbers (n) grow with newer ones.
 let order='new',cache=null;const sortBtn=$('#sort'),byN=(a,b)=>(order==='new'?-1:1)*(a.n-b.n);
 const syncSort=()=>{if(!sortBtn)return;const nf=order==='new',lab=sortBtn.querySelector('.sort-label');if(lab)lab.textContent=nf?'Newest first':'Oldest first';sortBtn.dataset.order=order;sortBtn.setAttribute('aria-label',`Showing ${nf?'newest':'oldest'} first. Switch to ${nf?'oldest':'newest'} first.`);sortBtn.hidden=false};

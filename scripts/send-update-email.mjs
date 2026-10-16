@@ -11,14 +11,29 @@ const SUBJECT = process.env.EMAIL_SUBJECT || 'Chapters have been refreshed!';
 const TEXT = process.env.EMAIL_TEXT || 'Chapters have been refreshed!';
 const DATA_PATH = process.env.CHAPTERS_PATH || 'argus/data/chapters.json';
 
+// Same rule as the site (assets/main.js): a chapter can be slotted into the catalog out of
+// sequence, so "latest" isn't always the last chapter in volume order. Prefer the real publish
+// date when both chapters being compared have one; otherwise fall back to WebNovel's chapter ID,
+// which is always assigned in publish order.
+function chapterId(chapter) {
+  if (chapter && typeof chapter.id === 'string' && chapter.id) return chapter.id;
+  const m = typeof chapter?.url === 'string' ? chapter.url.match(/_(\d+)\/?$/) : null;
+  return m ? m[1] : '0';
+}
+function laterOf(a, b) {
+  const ad = a.published ? Date.parse(a.published) : NaN;
+  const bd = b.published ? Date.parse(b.published) : NaN;
+  if (!Number.isNaN(ad) && !Number.isNaN(bd)) return ad >= bd ? a : b;
+  return BigInt(chapterId(a)) >= BigInt(chapterId(b)) ? a : b;
+}
 function latestChapterDetails() {
   if (!existsSync(DATA_PATH)) return null;
   try {
     const data = JSON.parse(readFileSync(DATA_PATH, 'utf8'));
     const vols = Array.isArray(data.volumes) ? data.volumes : [];
-    const lastVolume = vols[vols.length - 1];
-    const lastChapter = lastVolume && Array.isArray(lastVolume.chapters) ? lastVolume.chapters[lastVolume.chapters.length - 1] : null;
-    if (!lastChapter) return null;
+    const chapters = vols.flatMap(v => Array.isArray(v.chapters) ? v.chapters : []);
+    if (!chapters.length) return null;
+    const lastChapter = chapters.reduce(laterOf);
     return { title: String(lastChapter.title || ''), url: String(lastChapter.url || ''), chapter: lastChapter.n };
   } catch {
     return null;

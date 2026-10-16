@@ -44,11 +44,20 @@ const resolveDataSrc=(root)=>{
   }
   return candidates[0] ? new URL(candidates[0], window.location.href).href : '/argus/data/chapters.json';
 };
-const dateText=date=>{if(!date)return '';const value=new Date(date);return Number.isNaN(value.getTime())?'':new Intl.DateTimeFormat('en-US',{year:'numeric',month:'short',day:'numeric'}).format(value)};
+const dateText=date=>{if(!date)return '';const value=new Date(date);return Number.isNaN(value.getTime())?'':new Intl.DateTimeFormat('en-US',{year:'numeric',month:'2-digit',day:'2-digit'}).format(value)};
+// The true "latest" chapter isn't always the last one in catalog/volume order — a chapter can be
+// slotted in out of sequence (e.g. a "Chapter 12" posted after "Chapter 100" already exists). Prefer
+// the real publish date when both chapters being compared have one; otherwise fall back to comparing
+// WebNovel's chapter ID (always assigned in publish order), kept as BigInt since these IDs are too
+// large for a JS number.
+const idOf=c=>{try{return BigInt(c.id||chId(c.url)||'0')}catch{return 0n}};
+const laterOf=(a,b)=>{const ad=a.published?Date.parse(a.published):NaN,bd=b.published?Date.parse(b.published):NaN;
+if(!Number.isNaN(ad)&&!Number.isNaN(bd))return ad>=bd?a:b;
+return idOf(a)>=idOf(b)?a:b};
 // Sort order of the list: 'new' = newest first (the default on every load), 'old' = oldest first. Volume/chapter numbers (n) grow with newer ones.
 let order='new',cache=null;const sortBtn=$('#sort'),byN=(a,b)=>(order==='new'?-1:1)*(a.n-b.n);
 const syncSort=()=>{if(!sortBtn)return;const nf=order==='new',lab=sortBtn.querySelector('.sort-label');if(lab)lab.textContent=nf?'Newest first':'Oldest first';sortBtn.dataset.order=order;sortBtn.setAttribute('aria-label',`Showing ${nf?'newest':'oldest'} first. Switch to ${nf?'oldest':'newest'} first.`);sortBtn.hidden=false};
-const renderChapters=(vols,music=new Map())=>{const last=vols[vols.length-1].c.slice(-1)[0];
+const renderChapters=(vols,music=new Map())=>{const last=vols.flatMap(v=>v.c).reduce(laterOf);
 if(ch){const sorted=[...vols].sort(byN),shown=[...sorted.filter(isSpecial),...sorted.filter(v=>!isSpecial(v))];syncSort();ch.replaceChildren(...shown.map(v=>{const s=el('section',(isSpecial(v)?'vol-special':'')+(isWeen(v)?' vol-argusween':'')),volumeDate=dateText(v.c.find(c=>c.published)?.published),heading=`${volTitle(v)}${volumeDate?' '+volumeDate:''}`,h=el('h2');if(isWeen(v)){const pk=el('span','pumpkin');pk.setAttribute('aria-hidden','true');pk.innerHTML=pumpkinIcon;h.append(pk)}h.append(heading);s.append(h);const ol=el('ol');
 [...v.c].sort(byN).forEach(c=>{const li=el('li'),a=el('a');a.href=c.url;a.rel='noopener';a.append(el('span','',c.n),c.title);if(c.published)a.append(el('time','release-date',dateText(c.published)));li.append(a);const mu=music.get(chId(c.url));if(mu){const l=el('a','music');l.href=mu;l.target='_blank';l.rel='noopener noreferrer';l.title='Soundtrack for this chapter (opens in a new tab)';l.setAttribute('aria-label','Chapter '+c.n+' soundtrack, opens in a new tab');l.innerHTML=noteIcon;li.append(l)}
 if(c===last)li.append(el('em','pill','Latest'));ol.append(li)});s.append(ol);return s}));ch.removeAttribute('aria-busy')}

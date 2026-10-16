@@ -79,7 +79,12 @@ export function parse(html, { standaloneVolumes = STANDALONE_VOLUMES } = {}) {
       if (m) title = m[2];
       if (!title) continue;
       seen.add(id); n = m ? +m[1] : n + 1;
-      chapters.push({ n, title, url: ORIGIN + u.pathname, published: dateFrom(a) });
+      // WebNovel assigns this numeric chapter ID in publish order, so it stays correct
+      // even when a chapter is slotted into the catalog out of numeric/title order (e.g.
+      // a "Chapter 12" posted after "Chapter 100" already exists). Kept as a string: these
+      // IDs exceed Number.MAX_SAFE_INTEGER.
+      const chapterId = id.match(/_(\d+)$/)?.[1] || '';
+      chapters.push({ n, title, url: ORIGIN + u.pathname, published: dateFrom(a), id: chapterId });
     }
     if (!chapters.length) continue;
     const vm = v.title.match(/^volume\s*(\d+)\s*[:.\-–—]?\s*(.*)$/i);

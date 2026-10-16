@@ -104,14 +104,14 @@ footer{border-top:1px solid var(--line);padding:26px 0 40px;color:var(--dim);fon
 .home-page .book-links{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:14px;max-width:100%;margin-top:24px;padding:28px 0 40px}
 .home-page .card{position:relative;border:1px solid rgba(225,207,190,.55);border-radius:0;background:rgba(17,12,13,.78) url(missing-texture.svg) no-repeat right 14px top 14px/34px;padding:24px 22px;box-shadow:5px 5px 0 rgba(0,0,0,.5),inset 0 0 0 1px rgba(0,0,0,.65);transform:rotate(-.35deg)}
 .home-page .card:nth-child(even){transform:rotate(.45deg)}
-.home-page .card h3{font-family:UnifrakturCook,serif;font-size:1.65rem;font-weight:700;color:#eadfd2}
+.home-page .card h3{font-family:Arial,Helvetica,sans-serif;font-weight:300;letter-spacing:.04em;font-size:1.5rem;color:#eadfd2}
 .home-page .card p{color:#bdaea4}
 .home-page a.card:hover{background-color:rgba(48,29,32,.9);box-shadow:8px 9px 0 rgba(0,0,0,.62),inset 0 0 0 1px rgba(225,207,190,.28);color:#fff4e8;transform:translateY(-3px) rotate(0)}
 .home-page .book-card{width:min(100%,520px);min-height:74px;padding:18px 28px;display:grid;place-items:center;background:#0b0809;color:#eadfd2;text-align:center;font:600 clamp(1.15rem,3vw,1.7rem)/1 Spectral,Georgia,serif;letter-spacing:.08em}
 .home-page .book-card.ph-card{background:#070707;color:#f1f1f1}
 .home-page .dev-letter:hover,.home-page .dev-letter:focus-visible{color:inherit;border-color:transparent;transform:none;cursor:default}
 .home-page footer{margin-top:clamp(72px,14vh,170px);border-color:rgba(225,207,190,.2);color:#9d8e87}
-@media(max-width:700px){.home-page .name{margin-top:48px;font-size:clamp(3.6rem,19vw,6rem)}.home-page section{margin-top:80px}.home-page .card,.home-page .card:nth-child(even){transform:none}}
+@media(max-width:700px){.home-page .name{margin-top:48px;margin-left:auto;margin-right:auto;font-size:clamp(3.6rem,19vw,6rem);justify-content:center;text-align:center}.home-page section{margin-top:80px}.home-page .card,.home-page .card:nth-child(even){transform:none}}
 
 .phobia-page{--void:#080808;--coal:#151515;--bone:#f1f1f1;--dim:#aaa;--gold:#e8e8e8;--gold-hi:#fff;--gold-lo:#777;--line:#303030;background:#080808;color:#e8e8e8}
 .phobia-page::after{display:none}

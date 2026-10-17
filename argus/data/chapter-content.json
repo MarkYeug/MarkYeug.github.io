@@ -1,5 +1,6 @@
 {
   "schema": 1,
-  "note": "Import the author's manuscript as HTML inside each chapter's html field. Keep paragraph boundaries in <p> tags; <strong>, <em>, and <br> formatting is preserved.",
+  "source": "Automatically synchronized from public WebNovel chapter pages by GitHub Actions",
+  "updated": null,
   "chapters": {}
 }

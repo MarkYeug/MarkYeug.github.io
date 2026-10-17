@@ -9,22 +9,17 @@
 - The soundtrack note in the chapter list is now an availability indicator. When a chapter opens, its assigned YouTube soundtrack is requested through a hidden player. Browser autoplay policies may prevent unmuted autoplay until the reader interacts with the page.
 - Supabase integration supports email/password accounts, reading progress, chapter comments, and paragraph-specific comment threads.
 
-## Importing chapter prose
+## Automatic WebNovel chapter text sync
 
-The existing catalog file only stores chapter metadata. It does not contain the actual prose. Add each manuscript to `data/chapter-content.json` in this structure:
+The GitHub Actions workflow now runs `scripts/sync-chapter-content.mjs` after refreshing the chapter catalog. It opens the published WebNovel chapter pages in Chromium, reads the public chapter text, sanitizes the HTML, and stores paragraph and inline formatting in `data/chapter-content.json`. The workflow commits catalog and prose updates to the repository, which GitHub Pages then serves to the reader.
 
-```json
-{
-  "schema": 1,
-  "chapters": {
-    "12": {
-      "html": "<p>First paragraph with <em>italic text</em>.</p><p>Second paragraph with <strong>bold text</strong>.</p>"
-    }
-  }
-}
-```
+- On the first successful run, it attempts to sync every chapter missing text.
+- On scheduled runs, it refreshes the newest three chapters and retries any missing chapters.
+- Use **Actions → Update chapter list → Run workflow** to request a full refresh of all cataloged chapters.
+- If WebNovel returns a block page, HTTP error, or changed markup, the sync logs the chapter as unavailable and keeps any previously saved text. It does not log in, unlock paid chapters, or bypass access challenges. Missing chapters are retried on later runs.
+- The extractor keeps paragraph boundaries and supported inline formatting such as bold, italics, underlining, and line breaks. The reader removes unsupported markup before display.
 
-Use a proper JSON serializer or escape quotes and newlines correctly. Keep each paragraph in its own `<p>` element. The reader preserves paragraph breaks and supports paragraphs, bold, italics, underlining, strikethrough, blockquotes, headings, lists, and horizontal rules. Paragraph comment IDs are assigned in document order, so avoid inserting or reordering paragraphs after comments have been posted unless you intend those comments to move to the corresponding paragraph index.
+The existing catalog scraper has previously received HTTP 403 from WebNovel, so the sync may not populate every chapter until ordinary page access works in GitHub Actions. Check the workflow run logs to see which chapters were retrieved. The content file starts empty and is populated by the workflow; you should not have to manually paste chapter prose into it.
 
 ## Connecting Supabase
 

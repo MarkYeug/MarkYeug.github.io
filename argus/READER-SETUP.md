@@ -8,6 +8,7 @@
 - The reader reads formatted manuscript HTML from `data/chapter-content.json`.
 - The soundtrack note in the chapter list is now an availability indicator. When a chapter opens, its assigned YouTube soundtrack is requested through a hidden player. Browser autoplay policies may prevent unmuted autoplay until the reader interacts with the page.
 - Supabase integration supports email/password accounts, reading progress, chapter comments, and paragraph-specific comment threads.
+- Signed-in readers can upvote or downvote each comment (one vote per reader per comment), change or remove their vote, and delete their own comments. Row-level security enforces vote ownership and comment deletion ownership.
 
 ## Automatic WebNovel chapter text sync
 
@@ -24,11 +25,11 @@ The existing catalog scraper has previously received HTTP 403 from WebNovel, so 
 ## Connecting Supabase
 
 1. Create a project at https://supabase.com/.
-2. Open the project's SQL Editor and run all of `supabase-reader-schema.sql`.
+2. Open the project's SQL Editor and run all of `supabase-reader-schema.sql` for a fresh setup. If the original schema is already installed, run `supabase-comment-votes-migration.sql` to add the voting table and policies without changing existing comments.
 3. In the Supabase project's API settings, copy the Project URL and the **anon/public** key.
 4. Put those values in `data/supabase-config.js` as `SUPABASE_URL` and `SUPABASE_ANON_KEY`.
 5. In Supabase Authentication settings, configure the allowed site URL and redirect URLs to include your GitHub Pages site, including `https://markyeug.github.io/argus/read/`.
-6. Test registering, email confirmation (if enabled), signing in, progress saving, and posting comments.
+6. Test registering, email confirmation (if enabled), signing in, progress saving, posting comments, voting, and deleting a comment owned by the signed-in account.
 
 Never put a Supabase `service_role` key in this repository or any browser-side file. The schema enables row-level security so readers can only read/write their own progress, while chapter comments are publicly readable and only signed-in users can post them.
 

@@ -14,6 +14,7 @@ let session = null;
 let authMode = "signup";
 let activeParagraph = null;
 let comments = [];
+let commentVotes = [];
 let progressTimer = null;
 
 const safeText = (value) => String(value ?? "");
@@ -102,6 +103,56 @@ function renderComments() {
   });
   renderCommentList("#chapter-comment-list", comments.filter((c) => !c.paragraph_id));
 }
+function createCommentCard(comment) {
+  const item = document.createElement("article");
+  item.className = "comment-item";
+  const meta = document.createElement("div");
+  meta.className = "comment-meta";
+  const author = document.createElement("strong");
+  author.textContent = comment.display_name || "Reader";
+  const date = document.createElement("time");
+  date.textContent = dateLabel(comment.created_at);
+  meta.append(author,date);
+  const body = document.createElement("p");
+  body.className = "comment-body";
+  body.textContent = comment.body || "";
+  item.append(meta,body);
+
+  const actions = document.createElement("div");
+  actions.className = "comment-actions";
+  const vote = commentVotes.filter((row) => String(row.comment_id) === String(comment.id));
+  const upCount = vote.filter((row) => row.vote === 1).length;
+  const downCount = vote.filter((row) => row.vote === -1).length;
+  const ownVote = session ? vote.find((row) => row.user_id === session.user.id)?.vote : null;
+  const up = document.createElement("button");
+  up.type = "button";
+  up.className = "comment-vote" + (ownVote === 1 ? " is-selected" : "");
+  up.textContent = "▲ " + upCount;
+  up.title = "Upvote comment";
+  up.setAttribute("aria-label", "Upvote comment; " + upCount + " upvotes");
+  up.setAttribute("aria-pressed", String(ownVote === 1));
+  up.addEventListener("click", () => voteOnComment(comment, 1, up, down));
+  const down = document.createElement("button");
+  down.type = "button";
+  down.className = "comment-vote" + (ownVote === -1 ? " is-selected" : "");
+  down.textContent = "▼ " + downCount;
+  down.title = "Downvote comment";
+  down.setAttribute("aria-label", "Downvote comment; " + downCount + " downvotes");
+  down.setAttribute("aria-pressed", String(ownVote === -1));
+  down.addEventListener("click", () => voteOnComment(comment, -1, up, down));
+  actions.append(up,down);
+  if (session && session.user.id === comment.user_id) {
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.className = "comment-delete";
+    remove.textContent = "Delete";
+    remove.setAttribute("aria-label", "Delete your comment");
+    remove.addEventListener("click", () => deleteOwnComment(comment, remove));
+    actions.append(remove);
+  }
+  item.append(actions);
+  return item;
+}
 function renderCommentList(selector, list) {
   const root = $(selector);
   root.replaceChildren();
@@ -112,22 +163,34 @@ function renderCommentList(selector, list) {
     root.append(empty);
     return;
   }
-  list.forEach((comment) => {
-    const item = document.createElement("article");
-    item.className = "comment-item";
-    const meta = document.createElement("div");
-    meta.className = "comment-meta";
-    const author = document.createElement("strong");
-    author.textContent = comment.display_name || "Reader";
-    const date = document.createElement("time");
-    date.textContent = dateLabel(comment.created_at);
-    meta.append(author,date);
-    const body = document.createElement("p");
-    body.className = "comment-body";
-    body.textContent = comment.body || "";
-    item.append(meta,body);
-    root.append(item);
-  });
+  list.forEach((comment) => root.append(createCommentCard(comment)));
+}
+async function voteOnComment(comment, value, upButton, downButton) {
+  if (!supabase || !session) { openAuth("Sign in or create an account to vote on comments."); return; }
+  const existing = commentVotes.find((row) => String(row.comment_id) === String(comment.id) && row.user_id === session.user.id);
+  upButton.disabled = true;
+  downButton.disabled = true;
+  let result;
+  if (existing?.vote === value) {
+    result = await supabase.from("reader_comment_votes").delete().eq("comment_id", comment.id).eq("user_id", session.user.id);
+  } else {
+    result = await supabase.from("reader_comment_votes").upsert(
+      {comment_id: comment.id, user_id: session.user.id, vote: value},
+      {onConflict: "comment_id,user_id"}
+    );
+  }
+  upButton.disabled = false;
+  downButton.disabled = false;
+  if (result.error) { alert("Your vote could not be saved. Please try again."); return; }
+  await loadComments();
+}
+async function deleteOwnComment(comment, button) {
+  if (!supabase || !session || session.user.id !== comment.user_id) return;
+  if (!confirm("Delete your comment? This cannot be undone.")) return;
+  button.disabled = true;
+  const { error } = await supabase.from("reader_comments").delete().eq("id", comment.id).eq("user_id", session.user.id);
+  if (error) { button.disabled = false; alert("Your comment could not be deleted. Please try again."); return; }
+  await loadComments();
 }
 function openParagraphThread(paragraphId, paragraph) {
   const old = paragraph.nextElementSibling;
@@ -146,15 +209,7 @@ function openParagraphThread(paragraphId, paragraph) {
   if (!subset.length) {
     const empty = document.createElement("p"); empty.className = "comment-empty"; empty.textContent = "No comments on this paragraph yet."; list.append(empty);
   } else {
-    subset.forEach((comment) => {
-      const item = document.createElement("div"); item.className = "comment-item";
-      const meta = document.createElement("div"); meta.className = "comment-meta";
-      const name = document.createElement("strong"); name.textContent = comment.display_name || "Reader";
-      const date = document.createElement("time"); date.textContent = dateLabel(comment.created_at);
-      meta.append(name,date);
-      const body = document.createElement("p"); body.className = "comment-body"; body.textContent = comment.body || "";
-      item.append(meta,body); list.append(item);
-    });
+    subset.forEach((comment) => list.append(createCommentCard(comment)));
   }
   const form = document.createElement("form");
   form.className = "comment-form";
@@ -191,6 +246,9 @@ async function loadComments() {
   const { data, error } = await supabase.from("reader_comments").select("id,chapter_number,paragraph_id,user_id,display_name,body,created_at").eq("chapter_number",currentChapter.n).order("created_at",{ascending:true}).limit(500);
   if (error) { console.warn("Argus reader comments:",error.message); return; }
   comments = data || [];
+  const voteResult = await supabase.from("reader_comment_votes").select("comment_id,user_id,vote").in("comment_id", comments.map((comment) => comment.id).length ? comments.map((comment) => comment.id) : [-1]);
+  if (voteResult.error) console.warn("Argus reader votes:", voteResult.error.message);
+  commentVotes = voteResult.data || [];
   renderComments();
   if (activeParagraph) {
     const p = contentRoot.querySelector('[data-paragraph-id="' + CSS.escape(activeParagraph) + '"]');

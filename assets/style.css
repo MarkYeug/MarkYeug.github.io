@@ -175,3 +175,6 @@ h2 .pumpkin svg{display:block;width:100%;height:100%}
 .season-clock small{display:block;margin-top:6px;font:500 .78rem Tektur,sans-serif;letter-spacing:.06em;color:var(--dim)}
 .season-banner .sb-note{margin:12px 0 0;color:var(--dim);font-size:.9rem}
 .season-banner.party .sb-title{margin:0;font-size:clamp(1.5rem,5vw,2.6rem);text-shadow:0 0 26px rgba(212,175,55,.55)}
+
+/* Soundtrack marks in the Argus catalog are indicators, not links. */
+.music-indicator{cursor:default;flex:0 0 34px}.music-indicator:hover{background:transparent;color:var(--gold)}

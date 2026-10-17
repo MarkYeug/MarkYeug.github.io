@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Read Argus Directorates by Mark Yeug.">
+<title>Argus Directorates Reader</title>
+<link rel="icon" href="../../assets/missing-texture.svg">
+<link href="https://fonts.googleapis.com/css2?family=Tektur:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/style.css">
+<link rel="stylesheet" href="reader.css">
+</head>
+<body class="reader-page" data-theme="dark">
+<header class="reader-topbar" aria-label="Chapter navigation">
+<a id="previous-chapter" class="reader-nav reader-prev" href="../" aria-label="Previous chapter">← Previous Chapter</a>
+<a id="reader-current-title" class="reader-current-title" href="#chapter-heading">Loading chapter…</a>
+<a id="next-chapter" class="reader-nav reader-next" href="../" aria-label="Next chapter">Next Chapter →</a>
+</header>
+<main class="reader-main">
+<div class="reader-status" id="reader-status" role="status">Loading chapter…</div>
+<article class="reader-article" id="reader-article" hidden>
+<h1 id="chapter-heading"></h1>
+<div id="chapter-content" class="chapter-content"></div>
+<div id="content-missing" class="content-missing" hidden>
+<h2>Chapter text not imported yet</h2>
+<p>This chapter is listed in the catalog, but its formatted manuscript has not been added to the reader yet.</p>
+</div>
+<section class="chapter-end-comments" aria-labelledby="chapter-comments-heading">
+<h2 id="chapter-comments-heading">Chapter comments</h2>
+<div id="chapter-comment-list" class="comment-list"></div>
+<form id="chapter-comment-form" class="comment-form">
+<label for="chapter-comment-input">Leave a comment</label>
+<textarea id="chapter-comment-input" maxlength="3000" rows="3" placeholder="What did you think of this chapter?" required></textarea>
+<button type="submit">Post comment</button>
+</form>
+</section>
+<nav class="reader-bottom-nav" aria-label="Chapter navigation at end">
+<a id="previous-chapter-bottom" class="reader-nav" href="../">← Previous Chapter</a>
+<a id="next-chapter-bottom" class="reader-nav" href="../">Next Chapter →</a>
+</nav>
+</article>
+</main>
+<div id="auth-panel" class="auth-panel" hidden>
+<div class="auth-panel-head"><strong>Reader account</strong><button type="button" id="auth-close" aria-label="Close account panel">×</button></div>
+<p id="auth-message">Sign in to save reading progress and post comments.</p>
+<form id="auth-form">
+<label for="auth-name" id="auth-name-label">Display name</label>
+<input id="auth-name" autocomplete="nickname" maxlength="40" placeholder="Display name">
+<label for="auth-email">Email</label>
+<input id="auth-email" type="email" autocomplete="email" required>
+<label for="auth-password">Password</label>
+<input id="auth-password" type="password" autocomplete="current-password" minlength="8" required>
+<button type="submit" id="auth-submit">Create account</button>
+</form>
+<button type="button" id="auth-mode-toggle" class="auth-mode-toggle">Already have an account? Sign in</button>
+<button type="button" id="auth-signout" hidden>Sign out</button>
+</div>
+<button type="button" id="account-button" class="account-button" aria-label="Open reader account" title="Reader account">♙</button>
+<button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch to light mode" title="Switch to light mode"><span id="theme-icon" aria-hidden="true">☾</span></button>
+<div id="soundtrack-player" class="soundtrack-player" aria-hidden="true"></div>
+<script type="module" src="reader.js"></script>
+</body>
+</html>

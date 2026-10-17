@@ -37,6 +37,6 @@ Use a proper JSON serializer or escape quotes and newlines correctly. Keep each 
 
 Never put a Supabase `service_role` key in this repository or any browser-side file. The schema enables row-level security so readers can only read/write their own progress, while chapter comments are publicly readable and only signed-in users can post them.
 
-## Current limitation
+## Current limitation and source mapping
 
-The reader framework is ready, but no chapter prose is included in the repository content file yet. Until manuscript text is imported, chapter pages show an explicit placeholder rather than invented or scraped text.
+The reader framework is in place, but no chapter prose is included in the repository content file yet. I found a Volume I PDF in the project Library; its chapter numbering and titles do not line up one-to-one with the current 53-entry WebNovel catalog (for example, “Hungry” is numbered differently), so it has not been automatically split into reader chapters. That needs a verified chapter mapping or a current manuscript export before import. Until then, chapter pages show an explicit placeholder rather than mismatched, invented, or scraped text.

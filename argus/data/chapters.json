@@ -1,7 +1,7 @@
 {
  "schema": 1,
  "source": "https://www.webnovel.com/book/35397598808248905/catalog",
- "updated": "2026-10-30T11:56:55.118Z",
+ "updated": "2026-11-11T04:47:52.887Z",
  "volumes": [
   {
    "n": 1,
@@ -429,6 +429,76 @@
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/betrayal-the-letter-%22p%22_100095664263845130",
      "published": null,
      "id": "100095664263845130"
+    },
+    {
+     "n": 58,
+     "title": "Checkers",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/checkers_100186215864662571",
+     "published": null,
+     "id": "100186215864662571"
+    },
+    {
+     "n": 59,
+     "title": "Mindbreak",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/mindbreak_100186585366057883",
+     "published": null,
+     "id": "100186585366057883"
+    },
+    {
+     "n": 60,
+     "title": "Headshot",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/headshot_100187856139504429",
+     "published": null,
+     "id": "100187856139504429"
+    },
+    {
+     "n": 61,
+     "title": "EX: Spirals",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/ex-spirals_100301758806412110",
+     "published": null,
+     "id": "100301758806412110"
+    },
+    {
+     "n": 62,
+     "title": "These Stains Don't Wash Out",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/these-stains-don't-wash-out_100187867279573022",
+     "published": null,
+     "id": "100187867279573022"
+    },
+    {
+     "n": 63,
+     "title": "Due Apology",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/due-apology_100188661177448461",
+     "published": null,
+     "id": "100188661177448461"
+    },
+    {
+     "n": 64,
+     "title": "Peach Pit & The Letter \"T\"",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/peach-pit-the-letter-%22t%22_100188660640577156",
+     "published": null,
+     "id": "100188660640577156"
+    },
+    {
+     "n": 65,
+     "title": "EX: The Peach Tree",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/ex-the-peach-tree_100188662922273194",
+     "published": null,
+     "id": "100188662922273194"
+    },
+    {
+     "n": 66,
+     "title": "S.C.R.I.P.T: Juicy & Savory",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/s.c.r.i.p.t-juicy-savory_100188665203966020",
+     "published": null,
+     "id": "100188665203966020"
+    },
+    {
+     "n": 67,
+     "title": "S.C.R.I.P.T: Bitter & Almondy",
+     "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/s.c.r.i.p.t-bitter-almondy_100188664130239963",
+     "published": null,
+     "id": "100188664130239963"
     }
    ]
   },
@@ -437,21 +507,21 @@
    "name": "Hound City Filler Arc",
    "chapters": [
     {
-     "n": 58,
+     "n": 68,
      "title": "[Hound City 1/10]: Welcome... To Hound City...?",
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/%5Bhound-city-1-10%5D-welcome...-to-hound-city..._99787134751262818",
      "published": null,
      "id": "99787134751262818"
     },
     {
-     "n": 59,
+     "n": 69,
      "title": "[Hound City 2/10]: Ichor",
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/%5Bhound-city-2-10%5D-ichor_99810453336670743",
      "published": null,
      "id": "99810453336670743"
     },
     {
-     "n": 60,
+     "n": 70,
      "title": "[Hound City 3/10]: Excess",
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/%5Bhound-city-3-10%5D-excess_100141111326073522",
      "published": null,
@@ -464,14 +534,14 @@
    "name": "Argus-Ween 2026 Special Chapters",
    "chapters": [
     {
-     "n": 61,
+     "n": 71,
      "title": "Argus-Ween '26 Special Chapter: Dial Negligence #427",
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/argus-ween-'26-special-chapter-dial-negligence-427_99879525000737479",
      "published": null,
      "id": "99879525000737479"
     },
     {
-     "n": 62,
+     "n": 72,
      "title": "Argus-Ween '26 Special Chapter: Kotone & The Haunted Mansion!",
      "url": "https://www.webnovel.com/book/argus-directorates_35397598808248905/argus-ween-'26-special-chapter-kotone-the-haunted-mansion!_99998230783256915",
      "published": null,
